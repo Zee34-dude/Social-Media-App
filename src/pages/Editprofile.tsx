@@ -16,7 +16,6 @@ export const EditProfile = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [image, setImage] = useState<File | null>(null)
   const [isTextLoading, setIsTextLoading] = useState<boolean>(false)
-  const zion='f'
   const cloud_name = 'zion123'
   const preset = 'zion-uploads'
   const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
