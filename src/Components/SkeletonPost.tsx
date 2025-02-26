@@ -7,14 +7,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 
 
-
-interface Props {
-  username: string,
-  img: string,
-  text: string,
-  profilePic: string
-  loading: boolean
-}
 export const SKeletonPost = () => {
   return (
     <div className="flex mb-4 max-md:justify-center ">

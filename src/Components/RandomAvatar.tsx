@@ -1,12 +1,10 @@
 
-import Axios from 'axios'
 import { getDocs } from "firebase/firestore"
 import { db } from "../config/Firebase"
 import { collection } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useContext } from 'react'
 import { UserContext } from '../App'
-import Skeleton from 'react-loading-skeleton'
 export interface User {
   RandomId: string
   userId: string,

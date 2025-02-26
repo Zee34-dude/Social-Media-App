@@ -14,7 +14,7 @@ interface MenubarProps {
 
 export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
-  const { user, setIsOpen, isOpen } = useContext(UserContext)
+  const { setIsOpen, isOpen } = useContext(UserContext)
   const{preview}=useContext(ImageContext)
 
 

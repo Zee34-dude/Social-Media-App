@@ -1,14 +1,13 @@
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import * as yup from 'yup'
 import { useForm } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
-import { UserContext } from '../App'
+
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth, db } from '../config/Firebase'
+import { auth } from '../config/Firebase'
 // import { useAuthState } from "react-firebase-hooks/auth"
 
 import { useNavigate } from 'react-router-dom'
-import { doc, updateDoc } from 'firebase/firestore'
 interface Form {
   email: string,
   password: string
@@ -16,7 +15,6 @@ interface Form {
 
 export function Form() {
   const [error, setError] = useState(false)
-  const { user } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const schema = yup.object().shape({
@@ -29,7 +27,8 @@ export function Form() {
   const onSubmit = async (data: Form) => {
     setLoading(true)
     try {
-      const result = await signInWithEmailAndPassword(auth, data.email, data.password);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+
 
       navigate('/')
     }

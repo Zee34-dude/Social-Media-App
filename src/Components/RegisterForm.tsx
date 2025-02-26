@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { generateRandomId } from "./RandomId";
 import { db } from "../config/Firebase";
-import { setDoc, doc, addDoc, collection } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 
 interface CreateForm {
   name: string,
@@ -20,9 +20,6 @@ interface CreateForm {
 
 export const RegisterForm = () => {
   const [error, setError] = useState(false)
-
-  const { user } = useContext(UserContext)
-
   const navigate = useNavigate()
   const { setAuthInitialized } = useContext(UserContext)
   const randomId = generateRandomId() as number

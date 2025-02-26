@@ -8,7 +8,7 @@ interface MenubarProps {
   id: string
 }
 export const Popup: React.FC<MenubarProps> = () => {
-  const { userPost, menuRef, popUp ,popUpId} = useContext(UserContext)
+  const { userPost, menuRef,popUpId} = useContext(UserContext)
   const { deletePost } = useContext(HomeContext)
 
 

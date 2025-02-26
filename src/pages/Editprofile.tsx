@@ -1,4 +1,4 @@
-import { CSSProperties, FormEvent, FormEventHandler, ReactHTML, useContext, useEffect, useRef, useState } from "react"
+import { CSSProperties, useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "../App"
 import { Avatar } from "../Components/RandomAvatar"
 import Skeleton from "react-loading-skeleton"
@@ -127,9 +127,6 @@ export const EditProfile = () => {
   useEffect(() => {
     uploadUserData()
   }, [form])
-  const cssOverride:CSSProperties={
-  
-  }
   return (
     <div className="md:ml-[25vw] pt-20  pb-10">
       <div className="flex flex-col  ">

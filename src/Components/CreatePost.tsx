@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "../App"
-import { db, auth } from '../config/Firebase'
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db} from '../config/Firebase'
+import { addDoc, collection } from "firebase/firestore";
 import { ClipLoader } from 'react-spinners'
-import { Navigate, useNavigate } from "react-router-dom";
+
 
 interface MenubarProps {
   setIsPost: React.Dispatch<React.SetStateAction<boolean>>;
