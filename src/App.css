@@ -1,0 +1,27 @@
+/* button{
+} */
+
+.spinner {
+
+  width: 30px;
+  height: 30px;
+  border: 3px solid white;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation-name: logo-spin;
+  animation-duration: 0.5s;
+  animation-timing-function:linear;
+  animation-iteration-count: infinite;
+
+}
+
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
