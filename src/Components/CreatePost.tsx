@@ -110,8 +110,8 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      ref={postRef} className={`fixed  z-5 left-[34%] top-30`}>
-      <div className=" create-post w-[400px] h-[400px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
+      ref={postRef} className={`fixed z-5 left-[7%] min-[500px]:left-[15%] sm:left-[29%] md:left-[34%] top-30`}>
+      <div className=" create-post w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
         {uploading ? <ClipLoader
           cssOverride={override}
           size={40} /> :
