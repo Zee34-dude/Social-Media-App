@@ -120,7 +120,7 @@ export const Home = () => {
     <>
       <HomeContext.Provider value={{ deletePost }}>
 
-        <div className=" max-[600px]:grid  md:ml-[25vw]  
+        <div className=" grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
         pt-[75px]  ">
 
           {

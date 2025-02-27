@@ -22,7 +22,6 @@ export const Post = ({ username, img, text, profilePic, id,isUserPost }: Props) 
   
   return (
     <div className="flex mb-4 max-md:justify-center relative ">
-
       {
         (
           popUp && <Popup
@@ -31,13 +30,11 @@ export const Post = ({ username, img, text, profilePic, id,isUserPost }: Props) 
           />
         )
       }
-      {<div className=" flex flex-col border-b border-b-[#b9b5b58c]">
+      {<div className=" flex flex-col border-b border-b-[#b9b5b58c] w-[500px]">
         <div className="flex max-[600px]:px-2">
           <span className=' flex gap-2'>
             <span className="w-[2rem] h-[2rem]">
-
               <img className="w-full h-full rounded-[50%] object-cover" src={profilePic} alt="" />
-
             </span>
             <span className="text-[14px]">
               {username}
@@ -50,8 +47,7 @@ export const Post = ({ username, img, text, profilePic, id,isUserPost }: Props) 
 
           </span>
         </div>
-        <div className="  w-[500px] max-[600px]:w-auto h-[500px] mt-4 relative  ">
-
+        <div className=" mt-4 relative h-[500px] max-[600px]:h-[min(400px,100vw)] ">
           <img className='h-full w-full object-cover scale-100 rounded-[3px] border-1  border-[#b9b5b58c] ' src={img} alt="" />
         </div>
         {/*interaction section */}

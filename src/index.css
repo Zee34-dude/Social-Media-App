@@ -50,3 +50,9 @@ body {
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
 }
+@media only  screen and (max-width:600px){
+  .container{
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
