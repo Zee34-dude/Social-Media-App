@@ -106,7 +106,6 @@ export const EditProfile = () => {
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0].id;
         const UpdateUser = doc(db, 'user', userDoc);
-
         await updateDoc(UpdateUser, {
           Bio: form?.bio
 
@@ -118,7 +117,7 @@ export const EditProfile = () => {
       setIsTextLoading(true)
     }
     catch (err) {
-      console.log(err)
+    
     }
     finally {
       setIsTextLoading(false)

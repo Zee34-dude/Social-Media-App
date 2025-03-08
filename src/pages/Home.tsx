@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react"
 import { Post } from "../Components/Posts"
-import { collection, getDocs, deleteDoc, doc, } from "firebase/firestore"
+import { collection, getDocs, deleteDoc, doc, query, where, updateDoc, } from "firebase/firestore"
 import { db } from "../config/Firebase"
 import { SKeletonPost } from "../Components/SkeletonPost"
 import { UserContext } from "../App"
@@ -13,7 +13,8 @@ interface Posts {
   text: string
   userId: string
   isUserPost: Function,
-  profilePic: string | undefined
+  profilePic: string | undefined,
+  likes: number
 }
 interface HomeContextType {
   deletePost: Function,
@@ -75,24 +76,20 @@ export const Home = () => {
       console.log(err)
     }
 
-    console.log('r')
+
   }
 
   useEffect(() => {
     getPosts()
-
-
   }, [])
 
 
   function isUserPost(id: string) {
-
     postsList?.map((post) => {
 
       if (id === post.id) {
         setPopupId(id)
         setPopup(true)
-
         post.username === user?.displayName ? setUserPost(true) : setUserPost(false)
       }
 
@@ -102,20 +99,18 @@ export const Home = () => {
 
 
   useEffect(() => {
-
     const Prop = postsList?.map((post) => {
       const profilePic = CheckUserId(post.userId)
       return { ...post, profilePic: profilePic?.filter(post => post !== null) }
     });
     function CheckUserId(PostId: string) {
-      console.log(PostId)
       return userList?.map((doc) => doc.userId === PostId ? doc.RandomId : null)
     }
-    console.log(Prop)
     setProp(Prop as Posts[])
 
   }, [postsList?.length])
 
+ 
   return (
     <>
       <HomeContext.Provider value={{ deletePost }}>
@@ -127,7 +122,7 @@ export const Home = () => {
             loading && Array.from({ length: 5 }).fill('').map((o, index) => {
               console.log(o)
               return <SKeletonPost
-             
+
                 key={index}
               />
 
@@ -144,7 +139,9 @@ export const Home = () => {
                 loading={loading}
                 id={post.id}
                 key={index}
+                userId={post.userId}
                 isUserPost={isUserPost}
+
 
               />
             )
