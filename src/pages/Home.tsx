@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react"
 import { Post } from "../Components/Posts"
-import { collection, getDocs, deleteDoc, doc, query, where, updateDoc, } from "firebase/firestore"
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
 import { db } from "../config/Firebase"
 import { SKeletonPost } from "../Components/SkeletonPost"
 import { UserContext } from "../App"

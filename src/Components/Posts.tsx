@@ -6,8 +6,8 @@ import { UserContext } from "../App";
 import { Popup } from "./MenuPopup";
 import { db } from "../config/Firebase";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
-import Skeleton from "react-loading-skeleton";
-import { FadeLoader, ScaleLoader } from "react-spinners";
+
+import { ScaleLoader } from "react-spinners";
 
 interface Props {
   username: string,
