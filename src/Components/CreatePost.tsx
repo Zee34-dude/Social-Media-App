@@ -120,9 +120,9 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-    style={{left:`${percentage<35?percentage:35}%`}}
-      ref={postRef} className={`fixed z-5  md:left-[35%] top-30`}>
-      <div className=" create-post w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
+    style={{left:`${percentage<15?percentage-6:percentage<35?percentage:35}%`}}
+      ref={postRef} className={`fixed z-5 md:left-[35%] top-30`}>
+      <div className=" create-post max-[500px]:w-[320px] max-[500px]:h-[320px] w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
         {uploading ? <ClipLoader
           cssOverride={override}
           size={40} /> :
