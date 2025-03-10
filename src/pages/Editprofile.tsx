@@ -127,8 +127,8 @@ export const EditProfile = () => {
     uploadUserData()
   }, [form])
   return (
-    <div className="md:ml-[25vw] pt-20  pb-10">
-      <div className="flex flex-col  ">
+    <div className="md:ml-[25vw] max-[768px]:px-5 pt-20  pb-10">
+      <div className="flex flex-col ">
         <div className="font-bold text-xl pb-5">Edit profile</div>
         <div className="flex items-center">
           <div className="flex items-center">
@@ -168,9 +168,9 @@ export const EditProfile = () => {
           <label htmlFor="input">
             <span className="text-[#999996dd] text-[0.85rem] "> Display Name</span>
           </label>
-          <div className="bg-[#303031] py-2 w-[40%] rounded-[6px]">
+          <div className="bg-[#303031] py-2 w-[160px] rounded-[6px]">
             <span className=" ">
-              <input name='displayName' id='input' className="px-2 text-[1rem] text-[#e0e0dedd] outline-0" placeholder="Display Name" type="text" />
+              <input name='displayName' id='input' className="px-2 text-[1rem] text-[#e0e0dedd] outline-0 w-full" placeholder="Display Name" type="text" />
             </span>
           </div>
         </div>
@@ -178,7 +178,7 @@ export const EditProfile = () => {
           <label htmlFor="input2">
             <span className="text-[#999996dd] text-[0.85rem] "> Bio</span>
           </label>
-          <div className="bg-[#303031] pb-10 w-[60%] rounded-[6px]  ">
+          <div className="bg-[#303031] pb-10 w-fit rounded-[6px]  ">
             <span className=" ">
               <textarea name='bio' id='input2' className="px-2 text-[1rem] outline-0 resize-none text-[#e0e0dedd] w-full " placeholder="Bio"   >
               </textarea>
