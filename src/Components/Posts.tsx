@@ -99,7 +99,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost }: Props)
     getComments()
     fetchLikes();
   }, [id, user?.uid]);
-  console.log(commentList, newList)
+ 
   function handleComment(e: any) {
     setComment(e.currentTarget.value)
 
