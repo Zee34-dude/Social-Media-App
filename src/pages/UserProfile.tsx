@@ -33,7 +33,7 @@ export const UserProfile = () => {
   return (
     <div className="w-full pb-38">
       <div className=" md:ml-[25vw] pt-20">
-        <div className=" flex flex-col justify-center">
+        <div className=" flex flex-col justify-center max-[768px]:px-[20px]">
           <div className="flex items-center ">
             <div className="flex items-center gap-4">
               {/**profile div */}
@@ -55,13 +55,13 @@ export const UserProfile = () => {
             </div>
           </div>
 
-          <div className="w-[88%] flex justify-center gap-6 pt-20 text-xl ">
+          <div className=" md:w-[88%] w-[100%] flex justify-center gap-6 pt-20 text-xl ">
             <span>0 posts</span>
             <span>0 followers</span>
             <span>0 following</span>
           </div>
-          <div className="border-t w-[88%] border-gray-400 mt-30">
-            <div className="h-full  w-full flex  justify-center gap-10 text-[0.875rem] pt-2">
+          <div className=" w-[100%] border-gray-400 mt-30">
+            <div className=" border-t h-full  md:w-[88%]  flex  justify-center gap-10 text-[0.875rem] pt-2">
               <span className="flex items-center gap-2 ">
                 <BsPostcardHeart className='w-[1.2rem] h-[1.2rem]' />
                 POSTS
