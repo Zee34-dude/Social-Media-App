@@ -50,7 +50,8 @@ export function Form() {
 
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className='text-black' onSubmit={handleSubmit(onSubmit)}>
+      {/* Email div */}
       <div className="mb-4">
         <label
           htmlFor="email"
@@ -62,13 +63,13 @@ export function Form() {
           type="email"
           id="email"
           placeholder="Enter your email"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className=" outline-none w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           {...register('email')}
         />
         {errors && <p className='text-red-600x'> {errors.email?.message}</p>}
       </div>
-
+      {/* password dv */}
       <div className="mb-4">
         <label
           htmlFor="password"
@@ -80,7 +81,7 @@ export function Form() {
           type="password"
           id="password"
           placeholder="Enter your password"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className=" outline-none w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           onClick={() => setError(false)}
           {...register('password')}
@@ -88,6 +89,7 @@ export function Form() {
         {errors.password && <p className='text-red-600'> {errors.password?.message}</p>}
         {error && <p className='text-red-700 text-sm'>Invalid username or password</p>}
       </div>
+      {/* remember div */}
       <div className="flex items-center mb-4">
         <input
           id="remember"

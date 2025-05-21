@@ -6,8 +6,8 @@ export const Register = () => {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 text-white">
-      <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md bg-line bg-gradient-to-br from-blue-700  to-purple-700  to-95%">
+    <div className="flex items-center justify-center min-h-screen bg-blue-500 text-black">
+      <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
         <h2 className="mb-6 text-3xl font-bold text-center ">
           Sign up
         </h2>

@@ -20,6 +20,7 @@ interface CreateForm {
 
 export const RegisterForm = () => {
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const { setAuthInitialized } = useContext(UserContext)
   const randomId = generateRandomId() as number
@@ -38,10 +39,9 @@ export const RegisterForm = () => {
   const onSubmit = async (data: CreateForm) => {
 
     try {
+      setLoading(true)
       const userCredentials = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      
       await signOut(auth)
-     
       await updateProfile(userCredentials.user, {
         displayName: data.name
       });
@@ -59,6 +59,7 @@ export const RegisterForm = () => {
     }
     finally {
       setAuthInitialized(true)
+      setLoading(false)
     }
 
   }
@@ -75,7 +76,7 @@ export const RegisterForm = () => {
           type="text"
           id="name"
           placeholder="Full name"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className="w-full px-4 py-2  bg-gray-50 border outline-none border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           {...register('name')}
         />
@@ -93,7 +94,7 @@ export const RegisterForm = () => {
           type="email"
           id="email"
           placeholder="Enter your email"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className="w-full px-4 py-2 outline-none  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           {...register('email')}
         />
@@ -111,7 +112,7 @@ export const RegisterForm = () => {
           type="password"
           id="password"
           placeholder="Enter your password"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className="w-full px-4 py-2 outline-none bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           {...register('password')}
         />
@@ -129,7 +130,7 @@ export const RegisterForm = () => {
           type="password"
           id="confirmPassword"
           placeholder="Confirm password"
-          className="w-full px-4 py-2  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+          className="w-full px-4 py-2 outline-none  bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-gray-600"
           required
           {...register('confirmPassword')}
         />
@@ -142,7 +143,7 @@ export const RegisterForm = () => {
         <input
           id="remember"
           type="checkbox"
-          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          className="w-4 h-4 text-blue-600 outline-none border-gray-300 rounded focus:ring-blue-500"
         />
         <label
           htmlFor="remember"
@@ -154,9 +155,10 @@ export const RegisterForm = () => {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full px-4  flex justify-center py-2 outline-none text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
-        Sign up
+        {loading ? <div className='spinner'> </div> : 'Sign Up'}
+
       </button>
     </form>
   )

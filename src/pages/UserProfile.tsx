@@ -29,22 +29,22 @@ export const UserProfile = () => {
   useEffect(() => {
     getUserBio()
   }, [])
-  console.log()
+ 
   return (
     <div className="w-full pb-38">
       <div className=" md:ml-[25vw] pt-20">
         <div className=" flex flex-col justify-center max-[768px]:px-[20px]">
-          <div className="flex items-center ">
+          <div className="flex items-center  ">
             <div className="flex items-center gap-4">
               {/**profile div */}
-              <span className="h-30 w-30">
+              <span className="h-25 w-25 max-[340px]:h-18 max-[340px]:w-18">
                 {/**profile image */}
                 <Avatar preview={preview} />
               </span>
               <span className=" flex flex-col relative ">
-                <p className="text-3xl font-bold"> {user?.displayName}</p>
+                <p className="text-2xl font-bold"> {user?.displayName}</p>
                 <p className="text-gray-400 text-[0.875rem]">{user?.email}</p>
-                <p className=" text-[0.875rem] w-50 absolute bottom-[-50px]">
+                <p className=" text-[0.875rem] w-50 ">
                   {userInfo ? userInfo[0].Bio : ''}
                 </p>
               </span>

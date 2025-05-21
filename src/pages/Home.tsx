@@ -18,26 +18,50 @@ interface Posts {
 }
 interface HomeContextType {
   deletePost: Function,
+  commentPop: CommentPop | null,
+  setCommentPop: Function,
+  displayOption: string | null
+  setDisplayOption: (displayOption: string | null) => void
+  toDelete: boolean
+  setToDelete: (toDelete: boolean) => void
+  postsList: Posts[] | null
+  setPostsList: Function
 
 }
 interface User {
   RandomId: string | null,
   userId: string
 }
+interface CommentPop {
+  userId: string,
+  id: string
+
+
+}
 
 export const HomeContext = createContext<HomeContextType>({
-  deletePost: () => { }
+  deletePost: () => { },
+  commentPop: null,
+  setCommentPop: () => { },
+  displayOption: null,
+  setDisplayOption: () => { },
+  toDelete: false,
+  setToDelete: () => { },
+  postsList: null,
+  setPostsList: () => { },
 })
 export const Home = () => {
+  const { setPopup, user, setUserPost, setPopupId } = useContext(UserContext)
   const [postsList, setPostsList] = useState<Posts[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [userList, setUserList] = useState<User[] | null>(null)
-  const [Prop, setProp] = useState<Posts[] | undefined>(undefined)
+  const [Prop, setProp] = useState<Posts[]>([])
+  const [commentPop, setCommentPop] = useState<CommentPop | null>(null)
+  const [displayOption, setDisplayOption] = useState<string | null>(null)
+  const [toDelete, setToDelete] = useState<boolean>(false)
   const postRef = collection(db, 'posts');
   const userRef = collection(db, 'user')
 
-
-  const { setPopup, user, setUserPost, setPopupId } = useContext(UserContext)
 
   const getPosts = async () => {
     try {
@@ -78,44 +102,67 @@ export const Home = () => {
 
 
   }
+  // const updateDisplayName = async () => {
+  //   const response = await getDocs(postRefToUpdate)
+  //   console.log(response)
+
+  // for(let i=0;i++;i<response.docs.length){
+  //   const DocToupdate = doc(db, 'posts', response.docs[i].id)
+  //   try {
+  //     await updateDoc(DocToupdate, {
+  //       username: user?.displayName
+  //     })
+  //   }
+  //   catch (err) {
+  //     console.log(err)
+  //   }
+  // }
+
+  // }
 
   useEffect(() => {
     getPosts()
-  }, [])
+  }, [user?.displayName])
 
 
-  function isUserPost(id: string) {
+  // console.log(user?.uid)
+  function isUserPost(id: string, userId: string) {
     postsList?.map((post) => {
 
-      if (id === post.id) {
+      if (id === post.id && userId == undefined) {
         setPopupId(id)
         setPopup(true)
         post.username === user?.displayName ? setUserPost(true) : setUserPost(false)
+      }
+      if (id === post.id && userId == post.userId) {
+        setCommentPop({
+          userId: userId,
+          id: id
+        })
       }
 
     })
 
   }
-
+  function CheckUserId(PostId: string) {
+    return userList?.map((doc) => doc.userId === PostId ? doc.RandomId : null)
+  }
 
   useEffect(() => {
     const Prop = postsList?.map((post) => {
       const profilePic = CheckUserId(post.userId)
       return { ...post, profilePic: profilePic?.filter(post => post !== null) }
     });
-    function CheckUserId(PostId: string) {
-      return userList?.map((doc) => doc.userId === PostId ? doc.RandomId : null)
-    }
+
     setProp(Prop as Posts[])
 
   }, [postsList?.length])
 
- 
+
   return (
     <>
-      <HomeContext.Provider value={{ deletePost }}>
-
-        <div className=" grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
+      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop, displayOption, setDisplayOption, toDelete, setToDelete, postsList, setPostsList }}>
+        <div className=" relative grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
         pt-[75px]  ">
 
           {
@@ -148,18 +195,13 @@ export const Home = () => {
           }
         </div>
       </HomeContext.Provider>
-
+      {/* {(displayOption) ?
+        (<div className={`bg-[#0000009a] fixed top-0 w-full h-full z-14`}>
+         
+        </div>):''
+      } */}
     </>
   )
 
 }
 
-{/* <Post username={'skinnysgram'}
-  profilePic={avatar}
-  img={'src/assets/skinny-image.jpeg'}
-  text={'Happy and really gratefutl to be alive today'} />
-<Post
-  username={'AkpiNwaMama'}
-  profilePic={'src/assets/speedy.jpg'}
-  img={'src/assets/speedy.jpg'}
-  text={'gbas gbos'} /> */}

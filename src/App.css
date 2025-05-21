@@ -15,7 +15,9 @@
 
 }
 
-
+.content:hover .content-more{
+opacity: 1;
+}
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

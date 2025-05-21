@@ -17,7 +17,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { EditProfile } from './pages/Editprofile'
 import { ImageProvider } from './Components/ImageProvider'
 
-
+//state type specification
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -32,9 +32,8 @@ interface UserContextType {
   menuRef: { current: null | HTMLDivElement }
   popUpId: string | null,
   setPopupId: (popUpId: string | null) => void
-
-
 };
+//context
 export const UserContext = createContext<UserContextType>({
   user: null,
   setUser: () => { },
@@ -61,8 +60,7 @@ function App() {
   const [popUp, setPopup] = useState<boolean>(false)
   const [userPost, setUserPost] = useState(false)
   const [popUpId, setPopupId] = useState<string | null>(null)
-  const [scrollPosition, setScrollPostion] = useState<number>(JSON.parse(localStorage.getItem('scrollPosition') as string)||0)
-
+  const [scrollPosition, setScrollPostion] = useState<number>(JSON.parse(localStorage.getItem('scrollPostion') as string) || 0)
   const client = new QueryClient({
     defaultOptions:
     {
@@ -72,15 +70,21 @@ function App() {
       },
     }
   });
-  document.addEventListener('scroll', () => {
-    setScrollPostion(window.scrollY)
-    localStorage.setItem('scrollPosition', JSON.stringify(scrollPosition))
-    // document.body.style.position = 'relative'
-  });
-// if(!(isPost||popUp)){
-//   document.body.style.top=`-${scrollPosition}px`
-// }
+  useEffect(() => {
+    document.addEventListener('scroll', () => {
+      setScrollPostion(window.scrollY)
 
+
+    });
+    return () => {
+      document.removeEventListener('scroll', () => {
+        setScrollPostion(window.scrollY)
+
+      })
+    }
+  }, [isPost, popUp])
+
+//user details
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: User | null) => {
       if (firebaseUser) {
@@ -96,14 +100,17 @@ function App() {
   }, [auth]);
 
   useEffect(() => {
-    if (isPost || popUp) {
-      document.body.classList.add('disable-scroll');
-      document.body.style.top = `-${scrollPosition}px`
+    if (isPost) {
+      document.body.classList.add('enable-static');
+
+      // document.body.style.top = `-${scrollPosition}px`
 
     }
     else {
       document.body.classList.remove('disable-scroll');
       document.body.classList.add('enable-static')
+      // document.body.style.top = `-${scrollPosition}px`
+      console.log(scrollPosition)
 
     }
 

@@ -31,8 +31,12 @@ body {
   top:0
 }
 .enable-static{
-  position: static;
-
+  position: relative;
+  bottom: 0;
+  overflow-y: scroll;
+  right: 0;
+  left: 0;
+  top:0
 
 }
 .scrollbar-visible {

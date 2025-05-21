@@ -25,8 +25,14 @@ export const EditProfile = () => {
     }
   }
   const docRef = collection(db, 'user');
-  const q = query(docRef, where('userId', '==', user?.uid));
+  const postRef = collection(db, 'posts');
+  const commentRef = collection(db, 'comments')
+  const commentq = query(commentRef, where('userId', '==', user?.uid))
 
+  const q = query(docRef, where('userId', '==', user?.uid));
+  const postQ = query(postRef, where('userId', '==', user?.uid));
+
+  //function to update the profile image
   const updateImage = async () => {
     if (!image) return
 
@@ -44,19 +50,34 @@ export const EditProfile = () => {
         }
       )
       const data = await response.json()
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0].id;
-        const UpdateUser = doc(db, 'user', userDoc);
+      const queryArray = await getDocs(q);
+      const commentQueryDta = await getDocs(commentq)
+      console.log(queryArray, user?.uid)
+      const queryDataPromise = commentQueryDta.docs.map((dataObj) => {
+        const userCommentRef = doc(db, 'comments', dataObj.id)
+        if (user?.displayName !== undefined) {
+          return updateDoc(userCommentRef, {
+            img: data.secure_url
+          })
+        }
+        else {
+          return Promise.resolve();
+        }
+      })
 
-        await updateDoc(UpdateUser, {
+      const userRef = doc(db, 'user', queryArray.docs[0].id)
+      if (user?.displayName !== undefined) {
+        await updateDoc(userRef, {
           RandomId: data.secure_url,
-
-        });
-
-      } else {
-        return
+        })
       }
+
+
+
+      await Promise.all(queryDataPromise)
+
+
+
     } catch (error) {
       console.error('Error updating RandomId:', error);
     }
@@ -65,15 +86,17 @@ export const EditProfile = () => {
       setIsLoading(false)
     }
   };
+  //Effect handler for updateImage function
   useEffect(() => {
     updateImage()
-  }, [image])
+  }, [image]);
 
+  //function to call the click function of the inputRef
   function handleButtonClick(e: any) {
     e.preventDefault()
     inputRef.current?.click()
   }
-
+  //override css property of the load icon
   const override: CSSProperties = {
     position: "absolute",
     top: '40%',
@@ -81,7 +104,8 @@ export const EditProfile = () => {
 
 
   }
-  async function handleSubmit(e: any) {
+  //set the form state
+  async function setFormFunc(e: any) {
     e.preventDefault()
 
     const formData = new FormData(e.target)
@@ -91,20 +115,23 @@ export const EditProfile = () => {
       bio: formData.get('bio') as string,
     })
     e.target.input.value = ''
-  
   }
+  //upload the user Bio
   const uploadUserData = async () => {
     setIsTextLoading(true)
     try {
-
+      //not current user return
       if (!auth.currentUser) return
+      //else
       await updateProfile(auth.currentUser, {
         displayName: form?.displayName
 
       })
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0].id;
+
+      const queryArray = await getDocs(q);//get documents matching the query
+
+      if (!queryArray.empty) {
+        const userDoc = queryArray.docs[0].id;//get id from queryArray  
         const UpdateUser = doc(db, 'user', userDoc);
         await updateDoc(UpdateUser, {
           Bio: form?.bio
@@ -114,17 +141,53 @@ export const EditProfile = () => {
       } else {
         return
       }
-      setIsTextLoading(true)
+
     }
     catch (err) {
-    
+
     }
     finally {
       setIsTextLoading(false)
+      console.log('rrrr')
     }
   }
+  //Update the Username in the post and comment field
+  async function updateUserName() {
+    try {
+      const postqueryArray = await getDocs(postQ)
+      const postDoc = postqueryArray.docs[0].id
+      const updatePost = doc(db, 'posts', postDoc)
+      const commentQueryData = await getDocs(commentq)
+
+      await updateDoc(updatePost, {
+        username: form?.displayName
+      })
+
+      const updatePromises = commentQueryData.docs.map((docSnap) => {
+        const userCommentRef = doc(db, 'comments', docSnap.id);
+
+        if (user?.displayName !== undefined) {
+          return updateDoc(userCommentRef, {
+            username: user.displayName,
+          });
+        } else {
+          return Promise.resolve(); // if undefined, skip update
+        }
+      });
+
+      await Promise.all(updatePromises);
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      console.log('taavavca')
+    }
+  }
+  //Effect handler for uploading user date and username
   useEffect(() => {
     uploadUserData()
+    updateUserName()
   }, [form])
   return (
     <div className="md:ml-[25vw] max-[768px]:px-5 pt-20  pb-10">
@@ -162,7 +225,7 @@ export const EditProfile = () => {
           </div>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="mt-8">
+      <form onSubmit={setFormFunc} className="mt-8">
         <div className="text-xl font-bold pb-3 ">Edit Profile</div>
         <div className="flex flex-col w-[50%] items-start gap-1">
           <label htmlFor="input">
@@ -185,7 +248,7 @@ export const EditProfile = () => {
             </span>
           </div>
         </div>
-        <button type='submit' className="bg-[#5151C6] py-2 px-4 mt-6 rounded-[7px]">{isTextLoading ? <BeatLoader color="white" size={10}/> : 'Submit'}</button>
+        <button type='submit' className="bg-[#5151C6] py-2 px-4 mt-6 rounded-[7px]">{isTextLoading ? <BeatLoader color="white" size={10} /> : 'Submit'}</button>
 
       </form>
     </div>

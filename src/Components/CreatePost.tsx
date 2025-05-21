@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "../App"
-import { db} from '../config/Firebase'
+import { db } from '../config/Firebase'
 import { addDoc, collection } from "firebase/firestore";
-import { ClipLoader } from 'react-spinners'
+import { ClipLoader } from 'react-spinners';
+
 
 
 interface MenubarProps {
@@ -18,12 +19,14 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
   const [uploading, setUploading] = useState<boolean>(false)
   const [doneUpload, setDoneUpload] = useState<boolean>(false)
   const [textValue, setTextvalue] = useState<string | null>(null)
-  const [windowWidth, setWindowWidth]=useState<number>(window.innerWidth)
-  const percentage=Math.floor(windowWidth/27.357)
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
+  const percentage = Math.floor(windowWidth / 27.357)
   const InputRef = useRef<HTMLInputElement>(null)
   const Cloud_name = 'zion123'
   const preset = 'zion-uploads'
   const { user, postRef } = useContext(UserContext)
+  const postsRef = collection(db, 'posts')
+ 
 
   const handleDragOver = (e: React.DragEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -40,7 +43,6 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     console.log(URL.createObjectURL(file))
   }
 
-  const postsRef = collection(db, 'posts')
 
   const handleUpload = async () => {
     if (!image) return;
@@ -48,17 +50,17 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     const formData = new FormData();
     formData.append('file', image)
     formData.append('upload_preset', preset)
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${Cloud_name}/image/upload`,
+      {
+        method: "POST",
+        body: formData
 
+      }
+    )
+
+    const data = await response.json()
     try {
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${Cloud_name}/image/upload`,
-        {
-          method: "POST",
-          body: formData
 
-        }
-      )
-
-      const data = await response.json()
       await addDoc(postsRef, {
         image: data.secure_url,
         username: user?.displayName,
@@ -74,6 +76,7 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     finally {
       setUploading(false)
       setDoneUpload(true)
+      // setPostsList((prev) =>[...prev,{profilePic:CheckUserId(user?.uid||''),}] as Posts[] )
     }
 
   }
@@ -102,15 +105,15 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
   function handleButtonClick() {
     InputRef.current?.click()
   }
-  useEffect(()=>{
+  useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    window.addEventListener('resize',handleResize)
-  return ()=>{
-    removeEventListener('resize',handleResize)
-  }
-  },[])
+    window.addEventListener('resize', handleResize)
+    return () => {
+      removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   return (
 
@@ -120,7 +123,7 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-    style={{left:`${percentage<15?percentage-6:percentage<35?percentage:35}%`}}
+      style={{ left: `${percentage < 15 ? percentage - 6 : percentage < 35 ? percentage : 35}%` }}
       ref={postRef} className={`fixed z-5 md:left-[35%] top-30`}>
       <div className=" create-post max-[500px]:w-[320px] max-[500px]:h-[320px] w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
         {uploading ? <ClipLoader
@@ -177,7 +180,7 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
 
               {preview &&
                 <div className="">
-                  <span onClick={()=>{setPreview(undefined)}} className="text-[#5151C6]"> go back</span>
+                  <span onClick={() => { setPreview(undefined) }} className="text-[#5151C6]"> go back</span>
                   <span onClick={handleUpload} className="
             text-[#5151C6] absolute right-4  ">
                     Share
