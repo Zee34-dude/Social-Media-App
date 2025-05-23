@@ -44,7 +44,7 @@ export const Login = () => {
 
     <div className="h-[100vh] text-black">
       {!user && <div className="flex min-h-screen  h-full w-full">
-       <DatabaseLandingAnimation position='absolute'/>
+       <DatabaseLandingAnimation/>
         <div className="w-[70%] h-full p-6 bg-[#ffffff] shadow-md  ">
           <h2 className="mb-6 text-3xl font-bold text-center ">
             Login

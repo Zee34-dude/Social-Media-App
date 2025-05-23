@@ -1,17 +1,15 @@
 import { useEffect, useRef } from "react";
-interface Prop {
-    position: "static" | "relative" | "absolute" | "sticky" | "fixed";
-}
 
 
 
-const DatabaseLandingAnimation = ({ position }: Prop) => {
+
+const DatabaseLandingAnimation = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     type Points = Record<'x' | 'y' | 'radius' | 'dx' | 'dy', number>;
     useEffect(() => {
         const canvas = canvasRef.current as HTMLCanvasElement | null;
         const ctx = canvas?.getContext("2d") as CanvasRenderingContext2D;
-        let animationId:number;
+        let animationId: number;
         console.log({ y: canvas }, ctx)
 
 
@@ -42,7 +40,7 @@ const DatabaseLandingAnimation = ({ position }: Prop) => {
             }
             console.log(points)
             const draw = () => {
-                if(!ctx) return
+                if (!ctx) return
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Draw each point
@@ -79,7 +77,7 @@ const DatabaseLandingAnimation = ({ position }: Prop) => {
                     if (point.y < 0 || point.y > canvas.height) point.dy *= -1;
                 });
 
-               animationId= requestAnimationFrame(draw);
+                animationId = requestAnimationFrame(draw);
             };
 
             draw();
@@ -93,7 +91,7 @@ const DatabaseLandingAnimation = ({ position }: Prop) => {
                 window.removeEventListener("resize", handleResize);
             };
         };
-        return ()=>{
+        return () => {
             cancelAnimationFrame(animationId)
         }
 
