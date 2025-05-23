@@ -155,7 +155,7 @@ export const RegisterForm = () => {
 
       <button
         type="submit"
-        className="w-full px-4  flex justify-center py-2 outline-none text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full px-4  flex justify-center py-2 outline-none text-white bg-[#213ec0f1] rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         {loading ? <div className='spinner'> </div> : 'Sign Up'}
 

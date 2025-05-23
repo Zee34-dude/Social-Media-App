@@ -106,7 +106,7 @@ export function Form() {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 flex justify-center "
+        className="w-full px-4 py-2 text-white bg-[#213ec0f1] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 flex justify-center  "
       >
         {loading ? <div className='spinner'> </div> : 'Login'}
       </button>
