@@ -20,12 +20,13 @@ interface HomeContextType {
   deletePost: Function,
   commentPop: CommentPop | null,
   setCommentPop: Function,
-  displayOption: string | null
-  setDisplayOption: (displayOption: string | null) => void
+  userComment: boolean
+  setUserComment:(userComment: boolean) => void ;
   toDelete: boolean
   setToDelete: (toDelete: boolean) => void
   postsList: Posts[] | null
   setPostsList: Function
+
 
 }
 interface User {
@@ -43,8 +44,8 @@ export const HomeContext = createContext<HomeContextType>({
   deletePost: () => { },
   commentPop: null,
   setCommentPop: () => { },
-  displayOption: null,
-  setDisplayOption: () => { },
+  userComment: false,
+  setUserComment: () => { },
   toDelete: false,
   setToDelete: () => { },
   postsList: null,
@@ -57,7 +58,7 @@ export const Home = () => {
   const [userList, setUserList] = useState<User[] | null>(null)
   const [Prop, setProp] = useState<Posts[]>([])
   const [commentPop, setCommentPop] = useState<CommentPop | null>(null)
-  const [displayOption, setDisplayOption] = useState<string | null>(null)
+  const [userComment, setUserComment] = useState<boolean>(false)
   const [toDelete, setToDelete] = useState<boolean>(false)
   const postRef = collection(db, 'posts');
   const userRef = collection(db, 'user')
@@ -161,7 +162,7 @@ export const Home = () => {
 
   return (
     <>
-      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop, displayOption, setDisplayOption, toDelete, setToDelete, postsList, setPostsList }}>
+      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop,  userComment, setUserComment, toDelete, setToDelete, postsList, setPostsList }}>
         <div className=" relative grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
         pt-[75px]  ">
 

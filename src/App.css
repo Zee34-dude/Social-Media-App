@@ -3,16 +3,16 @@
 
 .spinner {
 
-  width: 30px;
-  height: 30px;
-  border: 3px solid white;
+  /* width: 30px;
+  height: 30px; */
+  border: 3px solid ;
   border-bottom-color: transparent;
   border-radius: 50%;
   animation-name: logo-spin;
   animation-duration: 0.5s;
   animation-timing-function:linear;
   animation-iteration-count: infinite;
-
+  
 }
 
 .content:hover .content-more{

@@ -16,6 +16,8 @@ export const EditProfile = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [image, setImage] = useState<File | null>(null)
   const [isTextLoading, setIsTextLoading] = useState<boolean>(false)
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+
   const cloud_name = 'zion123'
   const preset = 'zion-uploads'
   const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,15 +109,18 @@ export const EditProfile = () => {
   //set the form state
   async function setFormFunc(e: any) {
     e.preventDefault()
-
     const formData = new FormData(e.target)
     const displayName = e.target.input.value !== '' ? formData.get('displayName') as string : form?.displayName as string
     setForm({
       displayName,
       bio: formData.get('bio') as string,
     })
+    setShouldUpdate(true);
     e.target.input.value = ''
+
   }
+
+
   //upload the user Bio
   const uploadUserData = async () => {
     setIsTextLoading(true)
@@ -154,27 +159,35 @@ export const EditProfile = () => {
   //Update the Username in the post and comment field
   async function updateUserName() {
     try {
+      //post field
       const postqueryArray = await getDocs(postQ)
-      const postDoc = postqueryArray.docs[0].id
-      const updatePost = doc(db, 'posts', postDoc)
+      const updatePostpromise = postqueryArray.docs.map((docSnap) => {
+        const userPostRef = doc(db, 'posts', docSnap.id)
+        if (user?.displayName !== undefined) {
+          return updateDoc(userPostRef, {
+            username: form?.displayName
+          })
+        }
+        else {
+          return Promise.resolve()
+        }
+      });
+
+      //commet field
       const commentQueryData = await getDocs(commentq)
-
-      await updateDoc(updatePost, {
-        username: form?.displayName
-      })
-
       const updatePromises = commentQueryData.docs.map((docSnap) => {
         const userCommentRef = doc(db, 'comments', docSnap.id);
 
         if (user?.displayName !== undefined) {
           return updateDoc(userCommentRef, {
-            username: user.displayName,
+            username: form?.displayName,
           });
         } else {
           return Promise.resolve(); // if undefined, skip update
         }
       });
 
+      await Promise.all(updatePostpromise)
       await Promise.all(updatePromises);
     }
     catch (err) {
@@ -184,11 +197,17 @@ export const EditProfile = () => {
       console.log('taavavca')
     }
   }
-  //Effect handler for uploading user date and username
+
+
   useEffect(() => {
-    uploadUserData()
-    updateUserName()
-  }, [form])
+    if (shouldUpdate) {
+      uploadUserData();
+      updateUserName();
+      setShouldUpdate(false); // reset after running
+    }
+  }, [shouldUpdate]);
+
+  //Effect handler for uploading user date and username
   return (
     <div className="md:ml-[25vw] max-[768px]:px-5 pt-20  pb-10">
       <div className="flex flex-col ">

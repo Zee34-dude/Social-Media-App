@@ -6,10 +6,10 @@ import { UserContext } from "../App";
 import { Popup } from "./MenuPopup";
 import { db } from "../config/Firebase";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
-import { ScaleLoader } from "react-spinners";
 import { HomeContext } from "../pages/Home";
 import { themeContext } from "./ThemeContext";
 import { Comments } from "./Comments.tsx";
+
 
 interface Props {
   username: string,
@@ -36,16 +36,14 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
   const [liked, setLiked] = useState<boolean>(false);
   const [comment, setComment] = useState<string | null>(null)
   const [commentList, setCommentList] = useState<Comments[]>([])
-  const [volatileList, setVolatileList]= useState<Comments[]>([])
+  const [volatileList, setVolatileList] = useState<Comments[]>([])
   const [commentLoading, setCommentLoading] = useState(false)
   const { popUp, user } = useContext(UserContext);
-  const { commentPop, setCommentPop, setDisplayOption } = useContext(HomeContext)
+  const { commentPop, setCommentPop, setUserComment } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
-
   const postRef = useRef<HTMLSpanElement | null>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const commentSectionRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
-  const deleteCommentRef = useRef<HTMLDivElement | SVGSVGElement | null>(null)
   const likesRef = collection(db, 'likes');
   const commentsRef = collection(db, 'comments')
   const commentsDoc = query(commentsRef, where('postId', '==', id))
@@ -53,8 +51,6 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
   const newLikedState = !liked;
   const UserRef = collection(db, 'user')
   const userDoc = query(UserRef, where('userId', '==', user?.uid));
-
-
 
   const getComments = async () => {
     const commentData = await getDocs(commentsDoc)
@@ -112,7 +108,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
     getComments()
     fetchLikes();
 
-  }, [id, user?.uid]);
+  }, [id, user?.uid, commentList.length]);
   // state that holds comment temporary
   function handleComment(e: any) {
     setComment(e.currentTarget.value)
@@ -143,9 +139,9 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
     }
     finally {
-      setVolatileList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img }] as Comments[])
-      setCommentList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img }] as Comments[])
-    
+      setVolatileList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img, }] as Comments[])
+      setCommentList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img, }] as Comments[])
+
       setCommentLoading(false)
       setComment(null)
     }
@@ -173,65 +169,72 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
 
   useEffect(() => {
-    document.addEventListener('click', (event) => {
-      if (commentPop?.id === id && commentPop?.userId === userId) {
-
-        if (commentSectionRef.current['first'] && commentSectionRef.current['second']
-          && !commentSectionRef.current['first']?.contains(event.target as Node) &&
-          !commentSectionRef.current['second']?.contains(event.target as Node)) {
-          setCommentPop(null)
-
-        }
-
+    function handleClick(event: MouseEvent) {
+      if (commentSectionRef.current['first'] && commentSectionRef.current['second'] && !commentSectionRef.current['first']?.contains(event.target as Node) && !commentSectionRef.current['second']?.contains(event.target as Node)) {
+        setCommentPop(null)
       }
-    })
+    }
 
+    if (commentPop) {
+      document.addEventListener('click', handleClick);
+    }
 
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
   }, [commentPop]);
 
 
   const deleteComment = async (commentId: string) => {
-    console.log(commentId)
+    setCommentList((comments) => comments ? comments.filter(cment => cment.commentId !== commentId) : [])
+    setVolatileList((comments) => comments ? comments.filter(cment => cment.commentId !== commentId) : [])
     const cmentToDeleteData = doc(db, 'comments', commentId)
     try {
       await deleteDoc(cmentToDeleteData)
+
     }
     catch (err) {
 
     }
     finally {
-      setCommentList(
-        commentList.filter(doc => doc.commentId !== commentId)
-      )
 
     }
     console.log('money')
   }
-  function displayComment(commentId: string) {
-    commentList.map((comment) => {
-      if (comment.commentId == commentId) {
-        setDisplayOption(commentId)
+
+
+
+  function isUserComment( commentId: string) {
+
+    commentList.map((comment)=>{
+      if(commentId==comment.commentId){
+        comment.username===user?.displayName?setUserComment(true):setUserComment(false)
       }
     })
-  };
-  const newList: any = commentList.length > 0 ? commentList.map((doc, index) =>
 
+  }
+  const newList: any = commentList.length > 0 ? commentList.map((doc, index) =>
+    //display if any comments 
     <Comments
       username={doc.username}
       commentId={doc.commentId}
       comment={doc.comment}
       img={doc.img}
       key={index}
-      deleteCommentRef={deleteCommentRef}
+      commentSectionRef={commentSectionRef}
       deleteComment={deleteComment}
-      displayComment={displayComment}
+
       id={id}
       userId={userId}
+      isUserComment={isUserComment}
+
+
 
     />
 
 
   ) : (
+    //if no comments display this 
     <div className="flex  flex-col items-center justify-center h-full">
       <p className="text-2xl  font-bold">Sorry, no Comments</p>
       <div className="w-40 h-40 mt-20">
@@ -247,8 +250,10 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
       {commentPop?.id === id && commentPop?.userId === userId &&
         <div className="fixed z-12 top-[20%] left-[25%] w-full ">
+          {/* comment section */}
           <div ref={el => (commentSectionRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
             <div className="w-full border-b-[#adadad] border-b text-center py-2">Comments</div>
+            {/* comment list */}
             <div className="p-4">{newList}</div>
           </div>
         </div>
@@ -297,6 +302,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
           </div>
           <div className="write-up mt-2 mb-2">
             <p className='text-[14px]'>{text}</p>
+            {/** Display the comments temporarily under the post before a refresh*/}
             <div className="mt-2">{volatileList.map((list, index) => list.username === user?.displayName ? (
               <div key={index} className="flex gap-1">
                 <p className="text-[0.75rem]">{list.username}</p>
@@ -311,7 +317,10 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
             <textarea onChange={handleComment} ref={inputRef} placeholder="Add comment..." className="w-full text-xs resize-none outline-0">
 
             </textarea>
-            {commentLoading && <div className="absolute left-[5%] top-0"><ScaleLoader height={20} color="gray" /></div>}
+            {commentLoading&& <div style={{
+              borderColor:'#5b5b5c',
+              borderBottomColor:'transparent'
+            }} className='spinner absolute right-[50%] top-2 w-5 h-5'> </div>}
             {comment && <span onClick={addComment} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
             }   </div>
         </div>

@@ -61,7 +61,7 @@ const DatabaseLandingAnimation = () => {
                 //         if (dist < 100) {
                 //             ctx.beginPath();
                 //             ctx.moveTo(points[i].x, points[i].y);//Moves the pen to(x,y) without drawing
-                //             // ctx.lineTo(points[j].x, points[j].y);//draws a line from current point to (x,y)
+                //             ctx.lineTo(points[j].x, points[j].y);//draws a line from current point to (x,y)
                 //             ctx.strokeStyle = `rgba(0, 255, 255, ${1 - dist / 100})`;//sets the line color(opacity reduces with distance)
                 //             ctx.lineWidth = 0.6;
                 //             ctx.stroke();
@@ -103,7 +103,7 @@ const DatabaseLandingAnimation = () => {
                 style={{
                     position: 'relative',
                     width: "100vw",
-                    height: "100vh",
+                    height: "630px",
                     overflow: "hidden",
                 }}
             >
