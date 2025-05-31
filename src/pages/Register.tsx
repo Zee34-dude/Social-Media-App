@@ -11,7 +11,7 @@ export const Register = () => {
   return (
     <div className="relative">
       <DatabaseLandingAnimation/>
-        <div className="w-full max-w-sm p-6 bg-white absolute text-black rounded-lg shadow-md top-10 left-[35%]">
+        <div className="w-full max-w-sm p-6 bg-white absolute text-black rounded-lg shadow-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-[600px]:w-[80%]">
           <h2 className="mb-6 text-3xl font-bold text-center  ">
             Sign up
           </h2>
