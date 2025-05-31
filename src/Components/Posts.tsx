@@ -245,7 +245,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
   return (
 
-    <div className="flex mb-4 max-md:justify-center relative">
+    <div className=" flex mb-4 max-md:justify-center relative">
       {popUp && <Popup id={id} />}
 
       {commentPop?.id === id && commentPop?.userId === userId &&

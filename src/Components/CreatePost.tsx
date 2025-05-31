@@ -19,8 +19,6 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
   const [uploading, setUploading] = useState<boolean>(false)
   const [doneUpload, setDoneUpload] = useState<boolean>(false)
   const [textValue, setTextvalue] = useState<string | null>(null)
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
-  const percentage = Math.floor(windowWidth / 27.357)
   const InputRef = useRef<HTMLInputElement>(null)
   const Cloud_name = 'zion123'
   const preset = 'zion-uploads'
@@ -105,15 +103,6 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
   function handleButtonClick() {
     InputRef.current?.click()
   }
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize)
-    return () => {
-      removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   return (
 
@@ -123,9 +112,9 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      style={{ left: `${percentage < 15 ? percentage - 6 : percentage < 35 ? percentage : 35}%` }}
-      ref={postRef} className={`fixed z-5 md:left-[35%] top-30`}>
-      <div className=" create-post max-[500px]:w-[320px] max-[500px]:h-[320px] w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
+      
+      ref={postRef} className={`fixed z-5 center-div top-30`}>
+      <div className="  animate-slide-up create-post max-[500px]:w-[300px] max-[500px]:h-[320px] w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
         {uploading ? <ClipLoader
           cssOverride={override}
           size={40} /> :
