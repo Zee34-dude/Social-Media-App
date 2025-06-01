@@ -204,11 +204,11 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
 
 
-  function isUserComment( commentId: string) {
+  function isUserComment(commentId: string) {
 
-    commentList.map((comment)=>{
-      if(commentId==comment.commentId){
-        comment.username===user?.displayName?setUserComment(true):setUserComment(false)
+    commentList.map((comment) => {
+      if (commentId == comment.commentId) {
+        comment.username === user?.displayName ? setUserComment(true) : setUserComment(false)
       }
     })
 
@@ -247,11 +247,12 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
 
     <div className=" flex mb-4 max-md:justify-center relative">
       {popUp && <Popup id={id} />}
-
+      {/* comment section */ }
       {commentPop?.id === id && commentPop?.userId === userId &&
-        <div className="fixed z-12 top-[20%] left-[25%] w-full ">
-          {/* comment section */}
-          <div ref={el => (commentSectionRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
+    
+        <div className="fixed z-12 top-[20%] min-[768px]:left-[25%]  w-full ">
+
+          <div ref={el => (commentSectionRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} min-[768px]:w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
             <div className="w-full border-b-[#adadad] border-b text-center py-2">Comments</div>
             {/* comment list */}
             <div className="p-4">{newList}</div>
@@ -317,14 +318,14 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
             <textarea onChange={handleComment} ref={inputRef} placeholder="Add comment..." className="w-full text-xs resize-none outline-0">
 
             </textarea>
-            {commentLoading&& <div style={{
-              borderColor:'#5b5b5c',
-              borderBottomColor:'transparent'
+            {commentLoading && <div style={{
+              borderColor: '#5b5b5c',
+              borderBottomColor: 'transparent'
             }} className='spinner absolute right-[50%] top-2 w-5 h-5'> </div>}
             {comment && <span onClick={addComment} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
             }   </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
