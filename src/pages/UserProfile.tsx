@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useId, useState } from "react"
 import { UserContext } from "../App"
 import { themeContext } from "../Components/ThemeContext"
 import { UserPosts } from "../Components/User'sPosts"
@@ -14,6 +14,8 @@ import { User } from "../Components/RandomAvatar";
 
 export const UserProfile = () => {
   const [userInfo, setUserInfo] = useState<User[] | null>(null)
+  const [followerCount, setFollowCount] = useState<number>(0)
+  const [followingCount,setFollowingCount]=useState<number>(0)
   const { user } = useContext(UserContext)
   const { theme } = useContext(themeContext)
   const { preview } = useContext(ImageContext)
@@ -26,10 +28,23 @@ export const UserProfile = () => {
     )
 
   }
+  const followRef = collection(db, 'follow');
+  const followDoc = query(followRef, where('userId', '==', user?.uid))
+  const followerDoc = query(followRef, where('followerId', '==', user?.uid))
+  const fetchFollowers = async () => {
+    const followerData = await getDocs(followDoc)
+    const followingData=await getDocs(followerDoc)
+    setFollowCount(followerData.docs.length)
+    setFollowingCount(followingData.docs.length)
+
+
+
+  }
   useEffect(() => {
     getUserBio()
+    fetchFollowers()
   }, [])
- 
+
   return (
     <div className="w-full pb-38">
       <div className=" md:ml-[25vw] pt-20">
@@ -57,8 +72,8 @@ export const UserProfile = () => {
 
           <div className=" md:w-[88%] w-[100%] flex justify-center gap-6 pt-20 text-xl ">
             <span>0 posts</span>
-            <span>0 followers</span>
-            <span>0 following</span>
+            <span>{followerCount} followers</span>
+            <span>{followingCount} following</span>
           </div>
           <div className=" w-[100%] border-gray-400 mt-30">
             <div className=" border-t h-full  md:w-[88%]  flex  justify-center gap-10 text-[0.875rem] pt-2">

@@ -2,7 +2,7 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Home } from './pages/Home'
 import { Menubar } from './Components/Menubar'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import Navbar from './Components/Navbar'
@@ -16,7 +16,12 @@ import { UserProfile } from './pages/UserProfile'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { EditProfile } from './pages/Editprofile'
 import { ImageProvider } from './Components/ImageProvider'
-
+import { Activity } from './pages/ActivityPage'
+import { UserPost } from './Activity-Routes/Photo&Videos/UserPost'
+import { LikedPost } from './Activity-Routes/interactions/LIkedPosts'
+import { CommentedPost } from './Activity-Routes/interactions/CommentedPost'
+import { Interactions } from './Activity-Routes/Interactions'
+import { PhotoVideos } from './Activity-Routes/Photo&Videos'
 //state type specification
 interface UserContextType {
   user: User | null;
@@ -25,13 +30,15 @@ interface UserContextType {
   postRef: { current: null | HTMLFormElement }
   isOpen: boolean,
   setIsOpen: (isOpen: boolean) => void,
-  popUp: any,
-  setPopup: (popUp: boolean) => void
+  popUp: string | null,
+  setPopup: (popUp: string | null) => void
   userPost: boolean,
   setUserPost: (userPost: boolean) => void
   menuRef: { current: null | HTMLDivElement }
   popUpId: string | null,
   setPopupId: (popUpId: string | null) => void
+  isdragged: boolean
+  setIsdragged: (isdragged: boolean) => void
 };
 //context
 export const UserContext = createContext<UserContextType>({
@@ -47,7 +54,9 @@ export const UserContext = createContext<UserContextType>({
   setUserPost: () => { },
   menuRef: { current: null },
   popUpId: null,
-  setPopupId: () => { }
+  setPopupId: () => { },
+  isdragged: false,
+  setIsdragged: () => { }
 });
 
 function App() {
@@ -57,10 +66,16 @@ function App() {
   const postRef = useRef<HTMLFormElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [popUp, setPopup] = useState<boolean>(false)
+  const [popUp, setPopup] = useState<string | null>(null)
   const [userPost, setUserPost] = useState(false)
+  const [isdragged, setIsdragged] = useState<boolean>(false)
   const [popUpId, setPopupId] = useState<string | null>(null)
   const [scrollPosition, setScrollPostion] = useState<number>(JSON.parse(localStorage.getItem('scrollPostion') as string) || 0)
+  const [activeTab, setActiveTab] = useState(localStorage.getItem(`tabId-${user?.uid}`) || 'likes')
+  const handleActiveTab = (tabId: string) => {
+    localStorage.setItem(`tabId-${user?.uid}`, tabId)
+    setActiveTab(tabId)
+  }
   const client = new QueryClient({
     defaultOptions:
     {
@@ -84,7 +99,7 @@ function App() {
     }
   }, [isPost, popUp])
 
-//user details
+  //user details
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: User | null) => {
       if (firebaseUser) {
@@ -130,7 +145,7 @@ function App() {
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setPopup(false)
+        setPopupId(null)
 
       }
     }
@@ -151,7 +166,7 @@ function App() {
     <div className={`relative`}>
       <ImageProvider>
         <ThemeProvider>
-          <UserContext.Provider value={{ user, setUser, setAuthInitialized, postRef, isOpen, setIsOpen, popUp, setPopup, userPost, setUserPost, menuRef, popUpId, setPopupId }}>
+          <UserContext.Provider value={{ user, setUser, setAuthInitialized, postRef, isOpen, setIsOpen, popUp, setPopup, userPost, setUserPost, menuRef, popUpId, setPopupId, isdragged, setIsdragged }}>
             <QueryClientProvider client={client}>
               <Router>
                 {user && <Menubar
@@ -173,6 +188,28 @@ function App() {
                   {<Route path='/register' element={<Register />} />}
                   <Route path='/user-profile' element={<UserProfile />} />
                   <Route path='/edit-profile' element={<EditProfile />} />
+
+                </Routes>
+                <Routes>
+                  <Route path="/activity" element={<Activity />}>
+                    <Route path='interactions' element={<Interactions
+                      activeTab={activeTab}
+                      handleActiveTab={handleActiveTab}
+                    />}>
+                      <Route path='CommentedPost' element={<CommentedPost />} />
+                      <Route path='LikedPost' element={<LikedPost />} />
+                    </Route>
+                    <Route path='photovideos' element={<PhotoVideos
+                      activeTab={activeTab}
+                      handleActiveTab={handleActiveTab} />}>
+                      <Route path='UserPost' element={<UserPost
+
+                      />} />
+                    </Route>
+
+
+                  </Route>
+                  {/* Other routes */}
                 </Routes>
               </Router>
             </QueryClientProvider>
@@ -180,9 +217,9 @@ function App() {
         </ThemeProvider>
       </ImageProvider>
 
-      {(popUp || isPost) &&
+      {(popUpId || isPost) &&
         (<div className={`bg-[#0000009a] fixed top-0 w-full h-full z-3`}>
-          <div onClick={() => { setIsPost(false), setPopup(false) }} className='fixed right-10 top-14'>
+          <div onClick={() => { setIsPost(false), setPopupId(null) }} className='fixed right-10 top-14'>
             <MdClose fill='white' className='si' size={30} />
           </div>
         </div>)

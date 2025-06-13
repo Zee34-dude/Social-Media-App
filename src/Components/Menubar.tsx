@@ -5,6 +5,7 @@ import { UserContext } from '../App'
 import React, { useContext, useRef, useEffect } from "react";
 import { Avatar } from './RandomAvatar';
 import { ImageContext } from './ImageProvider';
+import { RxHamburgerMenu } from "react-icons/rx";
 
 
 interface MenubarProps {
@@ -14,8 +15,9 @@ interface MenubarProps {
 
 export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
-  const { setIsOpen, isOpen } = useContext(UserContext)
-  const{preview}=useContext(ImageContext)
+  const { setIsOpen, isOpen,setIsdragged,isdragged } = useContext(UserContext)
+  const { preview } = useContext(ImageContext)
+ 
 
 
   // Step 2: Toggle dropdown visibility
@@ -39,7 +41,8 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
   return (
     <header className={` border-b border-b-[#b9b5b5ef] ${'fixed'} z-2 top-0 left-0 right-0 h-14 navbar`}>
       <nav className="w-full h-full flex ">
-        <ul className="flex w-full">
+        <ul className="flex w-full justify-center ">
+          <li onClick={()=> {setIsdragged(!isdragged)}} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}
           <li className="pr-6 flex justify-start">
             <a className='w-full' href=" ">
@@ -90,7 +93,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
             </div>
             <div ref={el => (dropDownRef.current['first'] = el)} className='w-[2rem] h-[2rem] '>
               <span onClick={toggleDropdown} className='w-full h-full '>
-                <Avatar preview={preview}/>
+                <Avatar preview={preview} />
               </span>
             </div>
 
@@ -98,7 +101,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
         </ul>
       </nav>
-      { <ProfileMenu
+      {<ProfileMenu
         dropDownRef={dropDownRef}
         avatar={avatar}
         isOpen={isOpen} />}

@@ -4,7 +4,7 @@ import { signInWithPopup } from 'firebase/auth'
 import { Form } from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../App'
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { generateRandomId } from "../Components/RandomId";
 import DatabaseLandingAnimation from "../Components/LandingPageAnimation";
@@ -14,13 +14,20 @@ export const Login = () => {
   const { user, setIsOpen } = useContext(UserContext)
   const randomId = generateRandomId() as number
   const docRef = collection(db, 'user');
+  const [loadingState, setLoadingState] = useState(false)
 
 
   const signInPopup = async () => {
 
     try {
+      setLoadingState(true)
       const result = await signInWithPopup(auth, Provider);
+      if(result){
+        setLoadingState(false)
+      }
+
       const q = query(docRef, where('userId', '==', result.user.uid))
+     
       const docs = await getDocs(q)
       if (docs.empty) {
         await addDoc(collection(db, 'user'), {
@@ -36,9 +43,12 @@ export const Login = () => {
     }
     catch (rr) {
       console.log(rr)
+      setLoadingState(false)
     }
 
-
+    finally {
+      setLoadingState(false)
+    }
   }
 
   return (
@@ -54,6 +64,7 @@ export const Login = () => {
           <button className="w-full py-2 border-1 hover:border-blue-500 
           hover:text-blue-500 mt-8 border-gray-300 flex justify-center items-center
            rounded-3xl gap-2 transition-colors " onClick={signInPopup}>
+            {loadingState && <div className='spinner border-1  w-5 h-5'> </div>}
             <img src={googleImage} alt="" />
             Sign in with Google
           </button>

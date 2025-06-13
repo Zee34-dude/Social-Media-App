@@ -12,10 +12,10 @@ interface Prop {
     isUserComment: Function
 }
 
-export const Comments = ({ username, commentId, comment, img, commentSectionRef, deleteComment,isUserComment}: Prop) => {
+export const Comments = ({ username, commentId, comment, img, commentSectionRef, deleteComment, isUserComment }: Prop) => {
 
     const [showOptions, setShowOptions] = useState(false);
-    const { setCommentPop, commentPop,userComment } = useContext(HomeContext)
+    const { setCommentPop, commentPop, userComment } = useContext(HomeContext)
     const cancelRef = useRef<HTMLDivElement | null>(null)
     //Remove the comment section, if click Event occurs outside the comment section 
     useEffect(() => {
@@ -24,9 +24,9 @@ export const Comments = ({ username, commentId, comment, img, commentSectionRef,
                 && !commentSectionRef.current['first']?.contains(event.target as Node) &&
                 !commentSectionRef.current['second']?.contains(event.target as Node) && !cancelRef.current?.contains(event.target as Node)) {
                 setCommentPop(null)
-               
+
             }
-             };
+        };
 
         document.addEventListener('click', handleClick);
 
@@ -52,7 +52,7 @@ export const Comments = ({ username, commentId, comment, img, commentSectionRef,
 
 
                 <div>
-                    <svg onClick={() => { setShowOptions(true),isUserComment(commentId) }} aria-label="More options" className=" min-[768px]:opacity-0 content-more " fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
+                    <svg onClick={() => { setShowOptions(true), isUserComment(commentId) }} aria-label="More options" className=" min-[768px]:opacity-0 content-more " fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
                         <title>More options</title>
                         <circle cx="12" cy="12" r="1.5"></circle>
                         <circle cx="6" cy="12" r="1.5"></circle>
@@ -63,15 +63,15 @@ export const Comments = ({ username, commentId, comment, img, commentSectionRef,
             {showOptions &&
                 <div ref={cancelRef} className=" fixed left-[44%] top-[40%] z-15" >
                     <div className="flex flex-col create-post rounded-[5px]">
-                        {   userComment?
+                        {userComment ?
                             <div onClick={() =>
-                                
-                                 setTimeout(() => {
-                                deleteComment(commentId);
-                            }, 0)
-                                } className=" w-full  px-15 py-2 text-red-500 font-bold">Delete</div>:
+
+                                setTimeout(() => {
+                                    deleteComment(commentId);
+                                }, 0)
+                            } className=" w-full  px-15 py-2 text-red-500 font-bold">Delete</div> :
                             <div className=" w-full  px-15 py-2 text-red-500 font-bold">Report</div>
-                        
+
                         }
                         <div onClick={() => {
                             // Delay hiding the delete popup so  that cancelRef check works
@@ -80,6 +80,7 @@ export const Comments = ({ username, commentId, comment, img, commentSectionRef,
                             }, 0);
                         }} className="border-t px-15 py-2 font-bold">Cancel</div>
                     </div>
+                
                 </div>
             }
 

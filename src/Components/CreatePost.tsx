@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "../App"
 import { db } from '../config/Firebase'
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { ClipLoader } from 'react-spinners';
 
 
@@ -14,17 +14,20 @@ interface MenubarProps {
 }
 
 export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
-  const [image, setImage] = useState<File | null>(null)
+  const [file, setImage] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | undefined>(undefined)
   const [uploading, setUploading] = useState<boolean>(false)
   const [doneUpload, setDoneUpload] = useState<boolean>(false)
+  const [message, setMessage] = useState<boolean>(false)
   const [textValue, setTextvalue] = useState<string | null>(null)
   const InputRef = useRef<HTMLInputElement>(null)
   const Cloud_name = 'zion123'
   const preset = 'zion-uploads'
   const { user, postRef } = useContext(UserContext)
   const postsRef = collection(db, 'posts')
- 
+  const UserRef = collection(db, 'user')
+  const userQuery = query(UserRef, where('userId', '==', user?.uid))
+
 
   const handleDragOver = (e: React.DragEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -32,9 +35,15 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
 
   const handleDrop = (e: React.DragEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const maxsize = 30 * 1024 * 1024
     const file = e.dataTransfer.files[0]
+    if (file.size > maxsize) {
+      setMessage(true)
+      return
+
+    }
     console.log(file)
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith('image/') || file.type.startsWith('video/')) {
       setImage(file)
       setPreview(URL.createObjectURL(file))
     }
@@ -43,12 +52,13 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
 
 
   const handleUpload = async () => {
-    if (!image) return;
+    if (!file) return;
     setUploading(true)
     const formData = new FormData();
-    formData.append('file', image)
+    formData.append('file', file)
     formData.append('upload_preset', preset)
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${Cloud_name}/image/upload`,
+    const fileType = file.type.startsWith('image/') ? 'image' : 'video'
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${Cloud_name}/${fileType}/upload`,
       {
         method: "POST",
         body: formData
@@ -57,13 +67,15 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     )
 
     const data = await response.json()
+    const userData = await getDocs(userQuery)
     try {
 
       await addDoc(postsRef, {
-        image: data.secure_url,
+        [`${fileType}`]: data.secure_url,
         username: user?.displayName,
         userId: user?.uid,
         text: textValue,
+        profilePic: userData.docs[0].data().RandomId
       })
 
       console.log('o')
@@ -94,6 +106,7 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }
   }, [])
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (message) return
     if (e.target.files) {
       setImage(e.target.files[0])
       setPreview(URL.createObjectURL(e.target.files[0]))
@@ -112,7 +125,7 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
     }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      
+
       ref={postRef} className={`fixed z-5 center-div top-30`}>
       <div className="  animate-slide-up create-post max-[500px]:w-[300px] max-[500px]:h-[320px] w-[348px] h-[348px] shadow-[0px_4px_10px_rgba(0,0,0,0.3)] rounded-[4px] p-4">
         {uploading ? <ClipLoader
@@ -132,7 +145,9 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
               <div className="h-[70%] flex flex-col items-center justify-center gap-10">
                 <div
                   className=" h-full w-full flex items-center justify-center">
-                  {preview ? <img className="object-cover h-full w-full" src={preview} alt="" /> : <svg aria-label="Icon to represent media such as images or videos" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="77" role="img" viewBox="0 0 97.6 77.3" width="96">
+                  {preview ? (file?.type.startsWith('video/') ? <video autoPlay={true} src={preview} /> :
+                    <img className="object-cover h-full w-full" src={preview} alt="" />) : <svg aria-label="Icon to represent media such as images or videos"
+                      className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="77" role="img" viewBox="0 0 97.6 77.3" width="96">
                     <title>Icon to represent media such as images or videos</title>
                     <path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor">
                     </path>
@@ -140,8 +155,8 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
                     <path d="M78.2 41.6 61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z" fill="currentColor">
 
                     </path>
-
                   </svg>}
+                  {message && <div> This file is too big take it out </div>}
 
                 </div>
                 <input

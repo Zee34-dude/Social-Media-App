@@ -9,6 +9,8 @@ import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "fireb
 import { HomeContext } from "../pages/Home";
 import { themeContext } from "./ThemeContext";
 import { Comments } from "./Comments.tsx";
+import { MdClose } from "react-icons/md";
+import AutoPlayVideo from "./utilsComponents/AutoPlayVideo.tsx";
 
 
 interface Props {
@@ -20,6 +22,7 @@ interface Props {
   id: string,
   userId: string,
   isUserPost: Function
+  video: string
 }
 export interface Comments {
   comment: string,
@@ -31,14 +34,14 @@ export interface Comments {
   commentId: string
 }
 
-export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }: Props) => {
+export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, video }: Props) => {
   const [likesCount, setLikesCount] = useState<number>(0);
   const [liked, setLiked] = useState<boolean>(false);
   const [comment, setComment] = useState<string | null>(null)
   const [commentList, setCommentList] = useState<Comments[]>([])
   const [volatileList, setVolatileList] = useState<Comments[]>([])
   const [commentLoading, setCommentLoading] = useState(false)
-  const { popUp, user } = useContext(UserContext);
+  const { user, popUpId } = useContext(UserContext);
   const { commentPop, setCommentPop, setUserComment } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
   const postRef = useRef<HTMLSpanElement | null>(null)
@@ -51,7 +54,14 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
   const newLikedState = !liked;
   const UserRef = collection(db, 'user')
   const userDoc = query(UserRef, where('userId', '==', user?.uid));
-
+  const [followed, setFollowed] = useState<boolean>(false)
+  const followRef = collection(db, 'follow');
+  const followDoc = query(followRef, where('userId', '==', userId))
+  const fetchFollowers = async () => {
+    const followerData = await getDocs(followDoc)
+    const userFollowed = followerData.docs.find(doc => doc.data().followerId == user?.uid)
+    setFollowed(!!userFollowed)
+  }
   const getComments = async () => {
     const commentData = await getDocs(commentsDoc)
 
@@ -107,8 +117,9 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
     };
     getComments()
     fetchLikes();
+    fetchFollowers()
 
-  }, [id, user?.uid, commentList.length]);
+  }, [id, user?.uid, commentList.length, followed]);
   // state that holds comment temporary
   function handleComment(e: any) {
     setComment(e.currentTarget.value)
@@ -223,7 +234,6 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
       key={index}
       commentSectionRef={commentSectionRef}
       deleteComment={deleteComment}
-
       id={id}
       userId={userId}
       isUserComment={isUserComment}
@@ -246,11 +256,19 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
   return (
 
     <div className=" flex mb-4 max-md:justify-center relative">
-      {popUp && <Popup id={id} />}
-      {/* comment section */ }
+
+      {popUpId == id &&
+        <Popup
+          id={id}
+          userId={userId}
+          followed={followed}
+          setFollowed={setFollowed}
+
+        />}
+      {/* comment section */}
       {commentPop?.id === id && commentPop?.userId === userId &&
-    
-        <div className="fixed z-12 top-[20%] min-[768px]:left-[25%]  w-full ">
+
+        <div className="fixed z-12 top-[20%] min-[768px]:left-[25%] animate-pop w-full">
 
           <div ref={el => (commentSectionRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} min-[768px]:w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
             <div className="w-full border-b-[#adadad] border-b text-center py-2">Comments</div>
@@ -266,7 +284,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
             <span className="w-[2rem] h-[2rem]">
               <img className="w-full h-full rounded-[50%] object-cover" src={profilePic} alt="" />
             </span>
-            <span className="text-[14px]">{username}</span>
+            <span className="text-[14px]">{username} {userId}</span>
           </span>
           <span onClick={() => { isUserPost(id, undefined) }} className="ml-auto relative">
             <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
@@ -278,7 +296,13 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
           </span>
         </div>
         <div className="mt-4 relative h-[500px] max-[600px]:h-[min(400px,100vw)]">
-          <img className='h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]' src={img} alt="" />
+          {video ? <AutoPlayVideo src={video}  style={
+            {height:'100%'}
+            } className="'h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]" autoPlay={true} controls>
+              Your browser does not support the video tag.
+          </AutoPlayVideo> : <img className='h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]' src={img} alt="" />
+
+          }
         </div>
         <div className='content flex flex-col max-[600px]:px-4'>
           <div className='flex mt-4'>
@@ -315,17 +339,25 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId }
             <p ref={el => (commentSectionRef.current.second = el)} onClick={() => isUserPost(id, userId)} className="text-[12px] w-30 text-[#7c7a7a] mt-2">View all Comments...</p>
           </div>
           <div className="w-full mt-4 relative">
-            <textarea onChange={handleComment} ref={inputRef} placeholder="Add comment..." className="w-full text-xs resize-none outline-0">
+            <textarea name="textarea" onChange={handleComment} ref={inputRef} placeholder="Add comment..." className="w-full text-xs resize-none outline-0">
 
             </textarea>
             {commentLoading && <div style={{
               borderColor: '#5b5b5c',
               borderBottomColor: 'transparent'
-            }} className='spinner absolute right-[50%] top-2 w-5 h-5'> </div>}
+            }} className='spinner border-2 absolute right-[50%] top-2 w-5 h-5'> </div>
+            }
             {comment && <span onClick={addComment} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
             }   </div>
         </div>
       </div>
+      {(commentPop) &&
+        (<div className={`bg-[#00000042] fixed top-0 left-0 right-0 bottom-0 z-3`}>
+          <div onClick={() => { setCommentPop(null) }} className='fixed right-10 top-14'>
+            <MdClose fill='white' className='si' size={30} />
+          </div>
+        </div>)
+      }
     </div >
   );
 };

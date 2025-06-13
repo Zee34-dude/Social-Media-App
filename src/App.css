@@ -5,11 +5,11 @@
 
   /* width: 30px;
   height: 30px; */
-  border: 3px solid;
+
   border-bottom-color: transparent;
   border-radius: 50%;
   animation-name: logo-spin;
-  animation-duration: 0.5s;
+  animation-duration: 0.8s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 
@@ -21,7 +21,14 @@
     opacity: 1;
   }
 }
-
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -47,6 +54,7 @@
 @keyframes slide-up {
   0% {
     transform: translateY(100%);
+
   }
 
   100% {
@@ -54,6 +62,27 @@
   }
 }
 
+@keyframes popup {
+
+  0% {
+    opacity: 0;
+    transform: scale(1)
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1)
+  }
+
+}
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
+
+.animate-pop {
+  animation: popup 0.3s ease-in-out ;
+}
+/* .animate-rotate{
+animation: logo-spin 1s ease-in-out;
+animation-iteration-count: infinite;
+} */

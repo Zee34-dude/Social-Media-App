@@ -6,7 +6,7 @@ import { db } from "../config/Firebase"
 import { SKeletonPost } from "../Components/SkeletonPost"
 import { UserContext } from "../App"
 
-interface Posts {
+export interface Posts {
   id: string,
   image: string,
   username: string,
@@ -15,17 +15,19 @@ interface Posts {
   isUserPost: Function,
   profilePic: string | undefined,
   likes: number
+  video:string
 }
 interface HomeContextType {
   deletePost: Function,
   commentPop: CommentPop | null,
   setCommentPop: Function,
   userComment: boolean
-  setUserComment:(userComment: boolean) => void ;
+  setUserComment: (userComment: boolean) => void;
   toDelete: boolean
   setToDelete: (toDelete: boolean) => void
   postsList: Posts[] | null
   setPostsList: Function
+
 
 
 }
@@ -50,6 +52,8 @@ export const HomeContext = createContext<HomeContextType>({
   setToDelete: () => { },
   postsList: null,
   setPostsList: () => { },
+
+
 })
 export const Home = () => {
   const { setPopup, user, setUserPost, setPopupId } = useContext(UserContext)
@@ -103,23 +107,7 @@ export const Home = () => {
 
 
   }
-  // const updateDisplayName = async () => {
-  //   const response = await getDocs(postRefToUpdate)
-  //   console.log(response)
 
-  // for(let i=0;i++;i<response.docs.length){
-  //   const DocToupdate = doc(db, 'posts', response.docs[i].id)
-  //   try {
-  //     await updateDoc(DocToupdate, {
-  //       username: user?.displayName
-  //     })
-  //   }
-  //   catch (err) {
-  //     console.log(err)
-  //   }
-  // }
-
-  // }
 
   useEffect(() => {
     getPosts()
@@ -132,7 +120,7 @@ export const Home = () => {
 
       if (id === post.id && userId == undefined) {
         setPopupId(id)
-        setPopup(true)
+        setPopup(id)
         post.username === user?.displayName ? setUserPost(true) : setUserPost(false)
       }
       if (id === post.id && userId == post.userId) {
@@ -162,7 +150,7 @@ export const Home = () => {
 
   return (
     <>
-      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop,  userComment, setUserComment, toDelete, setToDelete, postsList, setPostsList }}>
+      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop, userComment, setUserComment, toDelete, setToDelete, postsList, setPostsList }}>
         <div className=" relative grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
         pt-[75px]  ">
 
@@ -183,6 +171,7 @@ export const Home = () => {
                 username={post.username}
                 profilePic={post.profilePic ?? ''}
                 img={post.image}
+                video={post.video}
                 text={post.text}
                 loading={loading}
                 id={post.id}
