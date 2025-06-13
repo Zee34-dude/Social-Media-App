@@ -1,4 +1,4 @@
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore"
+import { collection, getDocs, query, where } from "firebase/firestore"
 import { db } from "../../config/Firebase"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../../App"

@@ -1,10 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext,  useState } from "react";
 import { UserContext } from "../App";
 import { HomeContext } from "../pages/Home";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/Firebase";
-import { Spinner } from "../SvgComponents/Spinner";
-
 
 interface MenubarProps {
   id: string

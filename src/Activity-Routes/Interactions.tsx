@@ -1,4 +1,3 @@
-import { BsPostcardHeart } from "react-icons/bs"
 import { Link, Outlet } from "react-router-dom"
 export interface Prop {
     activeTab: string
