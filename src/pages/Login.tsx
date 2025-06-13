@@ -1,9 +1,9 @@
 import { auth, db, Provider } from "../config/Firebase";
-import { signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { getRedirectResult, signInWithPopup, signInWithRedirect } from "firebase/auth";
 import { Form } from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { generateRandomId } from "../Components/RandomId";
 import DatabaseLandingAnimation from "../Components/LandingPageAnimation";
@@ -51,6 +51,32 @@ export const Login = () => {
       setLoadingState(false);
     }
   };
+useEffect(() => {
+  const checkRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result) {
+        const q = query(docRef, where("userId", "==", result.user.uid));
+        const docs = await getDocs(q);
+        
+        if (docs.empty) {
+          await addDoc(docRef, {
+            userId: result.user.uid,
+            RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
+          });
+          console.log("New user document created");
+        }
+
+        navigate("/");
+        setIsOpen(false);
+      }
+    } catch (err) {
+      console.error("Error handling redirect result", err);
+    }
+  };
+
+  checkRedirectResult();
+}, []);
 
   return (
     <div className="h-[630px] text-black">
