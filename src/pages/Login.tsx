@@ -12,38 +12,38 @@ import googleImage from "../assets/google.bc5e59cc.svg";
 export const Login = () => {
   const navigate = useNavigate();
   const { user, setIsOpen } = useContext(UserContext);
-  const randomId = generateRandomId() as number;
   const docRef = collection(db, "user");
   const [loadingState, setLoadingState] = useState(false);
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+  const processUser = async (uid: string) => {
+    const q = query(docRef, where("userId", "==", uid));
+    const docs = await getDocs(q);
+
+    if (docs.empty) {
+      const randomId = generateRandomId() as number;
+      await addDoc(docRef, {
+        userId: uid,
+        RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
+      });
+      console.log("New user document created");
+    }
+
+    navigate("/");
+    setIsOpen(false);
+  };
+
   const handleSignIn = async () => {
     try {
       setLoadingState(true);
-      let result;
-      
       if (isMobile) {
         await signInWithRedirect(auth, Provider);
-        // On mobile, result will be handled after redirect, so return early
         return;
       } else {
-        result = await signInWithPopup(auth, Provider);
-      }
-
-      if (result) {
-        const q = query(docRef, where("userId", "==", result.user.uid));
-        const docs = await getDocs(q);
-        
-        if (docs.empty) {
-          await addDoc(docRef, {
-            userId: result.user.uid,
-            RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
-          });
-          console.log("New user document created");
+        const result = await signInWithPopup(auth, Provider);
+        if (result) {
+          await processUser(result.user.uid);
         }
-
-        navigate("/");
-        setIsOpen(false);
       }
     } catch (err) {
       console.error(err);
@@ -51,32 +51,24 @@ export const Login = () => {
       setLoadingState(false);
     }
   };
-useEffect(() => {
-  const checkRedirectResult = async () => {
-    try {
-      const result = await getRedirectResult(auth);
-      if (result) {
-        const q = query(docRef, where("userId", "==", result.user.uid));
-        const docs = await getDocs(q);
-        
-        if (docs.empty) {
-          await addDoc(docRef, {
-            userId: result.user.uid,
-            RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
-          });
-          console.log("New user document created");
+
+  useEffect(() => {
+    const checkRedirectResult = async () => {
+      try {
+        setLoadingState(true);
+        const result = await getRedirectResult(auth);
+        if (result) {
+          await processUser(result.user.uid);
         }
-
-        navigate("/");
-        setIsOpen(false);
+      } catch (err) {
+        console.error("Error handling redirect result", err);
+      } finally {
+        setLoadingState(false);
       }
-    } catch (err) {
-      console.error("Error handling redirect result", err);
-    }
-  };
+    };
 
-  checkRedirectResult();
-}, []);
+    checkRedirectResult();
+  }, []);
 
   return (
     <div className="h-[630px] text-black">
@@ -97,9 +89,7 @@ useEffect(() => {
             <p className="mt-20 text-sm text-center">
               Don’t have an account?
               <button
-                onClick={() => {
-                  navigate("/register");
-                }}
+                onClick={() => navigate("/register")}
                 className="text-[#213ec0f1] hover:underline"
               >
                 Sign up
