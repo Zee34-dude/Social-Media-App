@@ -1,5 +1,5 @@
 import { auth, db, Provider } from "../config/Firebase";
-import { getRedirectResult, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { getRedirectResult, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "firebase/auth";
 import { Form } from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
@@ -27,6 +27,8 @@ export const Login = () => {
         RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
       });
       console.log("New user document created");
+    } else {
+      console.log("Existing user found");
     }
 
     navigate("/");
@@ -37,16 +39,17 @@ export const Login = () => {
     try {
       setLoadingState(true);
       if (isMobile) {
+        console.log("Using redirect sign-in for mobile");
         await signInWithRedirect(auth, Provider);
-        return;
       } else {
+        console.log("Using popup sign-in for desktop");
         const result = await signInWithPopup(auth, Provider);
-        if (result) {
+        if (result?.user) {
           await processUser(result.user.uid);
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("Sign-in error", err);
     } finally {
       setLoadingState(false);
     }
@@ -56,9 +59,13 @@ export const Login = () => {
     const checkRedirectResult = async () => {
       try {
         setLoadingState(true);
+        console.log("Checking redirect result...");
         const result = await getRedirectResult(auth);
-        if (result) {
+        if (result?.user) {
+          console.log("Redirect result found", result.user);
           await processUser(result.user.uid);
+        } else {
+          console.log("No redirect result");
         }
       } catch (err) {
         console.error("Error handling redirect result", err);
@@ -68,6 +75,15 @@ export const Login = () => {
     };
 
     checkRedirectResult();
+
+    const unsub = onAuthStateChanged(auth, (user) => {
+      console.log("Auth state changed:", user);
+      if (user) {
+        processUser(user.uid);
+      }
+    });
+
+    return () => unsub();
   }, []);
 
   return (
