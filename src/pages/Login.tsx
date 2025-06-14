@@ -1,5 +1,5 @@
 import { auth, db, Provider } from "../config/Firebase";
-import { getRedirectResult, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "firebase/auth";
+import { getRedirectResult, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { Form } from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
@@ -14,7 +14,7 @@ export const Login = () => {
   const { user, setIsOpen } = useContext(UserContext);
   const docRef = collection(db, "user");
   const [loadingState, setLoadingState] = useState(false);
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const processUser = async (uid: string) => {
     const q = query(docRef, where("userId", "==", uid));
