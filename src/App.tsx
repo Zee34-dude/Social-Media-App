@@ -2,7 +2,7 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Home } from './pages/Home'
 import { Menubar } from './Components/Menubar'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import './App.css'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import Navbar from './Components/Navbar'
@@ -184,7 +184,8 @@ function App() {
                 />}
 
                 <Routes>
-                  {<Route path='/' element={user ? <Home /> : <Login />} />}
+                  <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+                  <Route path="/login" element={<Login />} />
                   {<Route path='/register' element={<Register />} />}
                   <Route path='/user-profile' element={<UserProfile />} />
                   <Route path='/edit-profile' element={<EditProfile />} />
