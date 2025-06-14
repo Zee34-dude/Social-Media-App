@@ -38,17 +38,17 @@ export const Login = () => {
   const handleSignIn = async () => {
     try {
       setLoadingState(true);
-      if (isMobile) {
-        console.log("Using redirect sign-in for mobile");
-        await signInWithRedirect(auth, Provider);
-      } else {
-        console.log("Using popup sign-in for desktop");
-        const result = await signInWithPopup(auth, Provider);
-        if (result?.user) {
-          await processUser(result.user.uid);
-        }
+      // if (isMobile) {
+      //   console.log("Using redirect sign-in for mobile");
+      //   await signInWithRedirect(auth, Provider);
+      // } else {
+      //   console.log("Using popup sign-in for desktop");
+      const result = await signInWithPopup(auth, Provider);
+      if (result?.user) {
+        await processUser(result.user.uid);
       }
-    } catch (err) {
+    }
+    catch (err) {
       console.error("Sign-in error", err);
     } finally {
       setLoadingState(false);

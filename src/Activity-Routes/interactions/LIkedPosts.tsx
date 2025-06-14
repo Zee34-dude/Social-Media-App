@@ -46,7 +46,7 @@ export const LikedPost = () => {
                         className="relative aspect-square group cursor-pointer">
                         {
                             post.video ?
-                                <video muted autoPlay className="w-full h-full object-cover rounded-sm" src={post.video}>
+                                <video muted controls={true} autoPlay className="w-full h-full object-cover rounded-sm" src={post.video}>
 
                                 </video> : <img
                                     src={post.image}

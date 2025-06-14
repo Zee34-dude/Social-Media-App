@@ -71,10 +71,19 @@ function App() {
   const [isdragged, setIsdragged] = useState<boolean>(false)
   const [popUpId, setPopupId] = useState<string | null>(null)
   const [scrollPosition, setScrollPostion] = useState<number>(JSON.parse(localStorage.getItem('scrollPostion') as string) || 0)
-  const [activeTab, setActiveTab] = useState(localStorage.getItem(`tabId-${user?.uid}`) || 'likes')
+  const [activeTab, setActiveTab] = useState<string>(localStorage.getItem(`tabId${user?.uid}` as string) || 'likes')
+  useEffect(() => {
+    if (user) {
+      const savedTab = localStorage.getItem(`tabId${user.uid}`) || 'likes';
+      setActiveTab(savedTab);
+    }
+  }, [user]);
+
   const handleActiveTab = (tabId: string) => {
-    localStorage.setItem(`tabId-${user?.uid}`, tabId)
     setActiveTab(tabId)
+    if (user) {
+      localStorage.setItem(`tabId${user.uid}`, tabId);
+    }
   }
   const client = new QueryClient({
     defaultOptions:
@@ -189,9 +198,6 @@ function App() {
                   {<Route path='/register' element={<Register />} />}
                   <Route path='/user-profile' element={<UserProfile />} />
                   <Route path='/edit-profile' element={<EditProfile />} />
-
-                </Routes>
-                <Routes>
                   <Route path="/activity" element={<Activity />}>
                     <Route path='interactions' element={<Interactions
                       activeTab={activeTab}
@@ -207,9 +213,11 @@ function App() {
 
                       />} />
                     </Route>
-
-
                   </Route>
+
+                </Routes>
+                <Routes>
+                  
                   {/* Other routes */}
                 </Routes>
               </Router>
