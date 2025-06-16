@@ -1,30 +1,31 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Link, Outlet } from "react-router-dom"
+import { themeContext } from "../Components/ThemeContext"
 
 
 export const Activity = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const {theme}=useContext(themeContext)
 
   return (
-    <div className="flex flex-col lg:flex-row text-white min-h-screen md:ml-[10%] lg:ml-[22%]">
+    <div className="flex flex-col lg:flex-row  min-h-screen md:ml-[10%] lg:ml-[22%]">
       {/* Mobile Header */}
-      <div className="lg:hidden  p-4 fixed top-10 left-0 right-0 z-50">
-        <div className="flex absolute right-5">
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
+      <div className="lg:hidden absolute top-15 right-3 z-50 ">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {isMobileMenuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+
       </div>
 
       {/* Activity Menu */}
@@ -33,9 +34,9 @@ export const Activity = () => {
         ${isMobileMenuOpen ? "block" : "hidden"} 
         lg:block 
         w-full lg:w-60 xl:w-60 
-        border-r border-gray-800 
+        border-r ${theme==='dark'?'border-gray-800':'border-gray-300'} 
         p-4 lg:p-6 
-        bg-black lg:bg-transparent
+         lg:bg-transparent
        relative
         top-14 
         left-0 
@@ -68,8 +69,8 @@ export const Activity = () => {
 
             <div className="flex-1">
               <Link to="interactions/LikedPost" onClick={() => setIsMobileMenuOpen(false)} className="block">
-                <h3 className="font-medium text-white text-sm lg:text-base">Interactions</h3>
-                <p className="text-xs lg:text-sm text-gray-400 mt-1">
+                <h3 className="font-medium  text-sm lg:text-base">Interactions</h3>
+                <p className="text-xs lg:text-sm  mt-1">
                   Review and delete likes, comments, and your other interactions.
                 </p>
               </Link>
@@ -89,8 +90,8 @@ export const Activity = () => {
             </svg>
             <div className="flex-1">
               <Link to="photovideos/UserPost" onClick={() => setIsMobileMenuOpen(false)} className="block">
-                <h3 className="font-medium text-white text-sm lg:text-base">Photos and videos</h3>
-                <p className="text-xs lg:text-sm text-gray-400 mt-1">
+                <h3 className="font-medium  text-sm lg:text-base">Photos and videos</h3>
+                <p className="text-xs lg:text-sm mt-1">
                   View, archive or delete photos and videos you've shared.
                 </p>
               </Link>
@@ -110,8 +111,8 @@ export const Activity = () => {
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
             <div className="flex-1">
-              <h3 className="font-medium text-white text-sm lg:text-base">Account history</h3>
-              <p className="text-xs lg:text-sm text-gray-400 mt-1">
+              <h3 className="font-medium  text-sm lg:text-base">Account history</h3>
+              <p className="text-xs lg:text-sm  mt-1">
                 Review changes you've made to your account since you created it.
               </p>
             </div>
@@ -129,8 +130,8 @@ export const Activity = () => {
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
             <div className="flex-1">
-              <h3 className="font-medium text-white text-sm lg:text-base">Download your information</h3>
-              <p className="text-xs lg:text-sm text-gray-400 mt-1">
+              <h3 className="font-medium text-sm lg:text-base">Download your information</h3>
+              <p className="text-xs lg:text-sm  mt-1">
                 Download a copy of the information you've shared with Instagram.
               </p>
             </div>

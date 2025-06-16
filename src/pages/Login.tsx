@@ -55,36 +55,36 @@ export const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const checkRedirectResult = async () => {
-      try {
-        setLoadingState(true);
-        console.log("Checking redirect result...");
-        const result = await getRedirectResult(auth);
-        if (result?.user) {
-          console.log("Redirect result found", result.user);
-          await processUser(result.user.uid);
-        } else {
-          console.log("No redirect result");
-        }
-      } catch (err) {
-        console.error("Error handling redirect result", err);
-      } finally {
-        setLoadingState(false);
-      }
-    };
+  // useEffect(() => {
+  //   const checkRedirectResult = async () => {
+  //     try {
+  //       setLoadingState(true);
+  //       console.log("Checking redirect result...");
+  //       const result = await getRedirectResult(auth);
+  //       if (result?.user) {
+  //         console.log("Redirect result found", result.user);
+  //         await processUser(result.user.uid);
+  //       } else {
+  //         console.log("No redirect result");
+  //       }
+  //     } catch (err) {
+  //       console.error("Error handling redirect result", err);
+  //     } finally {
+  //       setLoadingState(false);
+  //     }
+  //   };
 
-    checkRedirectResult();
+  //   checkRedirectResult();
 
-    const unsub = onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed:", user);
-      if (user) {
-        processUser(user.uid);
-      }
-    });
+  //   const unsub = onAuthStateChanged(auth, (user) => {
+  //     console.log("Auth state changed:", user);
+  //     if (user) {
+  //       processUser(user.uid);
+  //     }
+  //   });
 
-    return () => unsub();
-  }, []);
+  //   return () => unsub();
+  // }, []);
 
   return (
     <div className="h-[630px] text-black">

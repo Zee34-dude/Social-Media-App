@@ -63,7 +63,7 @@ export default function Navbar() {
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className={` z-3 block border-r border-r-[#b9b5b5ef]  left-0 top-[56px] bottom-0  py-4 px-6  fixed  xl:w-[260px] max-md:bg-[#121212]   ${windowWidth < 768 && (isdragged ? "translate-x-0" : "-translate-x-full")}
+          className={` z-3 block border-r  ${theme==='dark'?'border-gray-800':'border-r-[#b9b5b5ef] '}  left-0 top-[56px] bottom-0  py-4 px-6  fixed  xl:w-[260px] ${theme==='dark'?'bg-[#121212]':'#f8f7f7f8'} ${windowWidth < 768 && (isdragged ? "translate-x-0" : "-translate-x-full")}
          `}>
           <div
 
