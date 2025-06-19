@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react"
 import { Link, Outlet } from "react-router-dom"
-import { themeContext } from "../Components/ThemeContext"
+import { themeContext } from "../Context/ThemeContext"
 
 
 export const Activity = () => {

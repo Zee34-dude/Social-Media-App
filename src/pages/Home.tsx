@@ -1,10 +1,11 @@
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { Post } from "../Components/Posts"
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
 import { db } from "../config/Firebase"
 import { SKeletonPost } from "../Components/SkeletonPost"
 import { UserContext } from "../App"
+import { stateContext } from "../Context/StateContext"
 
 export interface Posts {
   id: string,
@@ -15,7 +16,7 @@ export interface Posts {
   isUserPost: Function,
   profilePic: string | undefined,
   likes: number
-  video:string
+  video: string
 }
 interface HomeContextType {
   deletePost: Function,
@@ -27,6 +28,7 @@ interface HomeContextType {
   setToDelete: (toDelete: boolean) => void
   postsList: Posts[] | null
   setPostsList: Function
+  
 
 
 
@@ -54,9 +56,11 @@ export const HomeContext = createContext<HomeContextType>({
   setPostsList: () => { },
 
 
+
 })
 export const Home = () => {
-  const { setPopup, user, setUserPost, setPopupId } = useContext(UserContext)
+  const { setPopup,setUserPost, setPopupId } = useContext(stateContext)
+  const {user}=useContext(UserContext)
   const [postsList, setPostsList] = useState<Posts[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [userList, setUserList] = useState<User[] | null>(null)
@@ -64,9 +68,39 @@ export const Home = () => {
   const [commentPop, setCommentPop] = useState<CommentPop | null>(null)
   const [userComment, setUserComment] = useState<boolean>(false)
   const [toDelete, setToDelete] = useState<boolean>(false)
+  const [comment, setComment] = useState<string | null>(null)
   const postRef = collection(db, 'posts');
   const userRef = collection(db, 'user')
 
+
+  const homeContextValue = useMemo(() => ({
+    // Post management
+    postsList,
+    setPostsList,
+    deletePost,
+
+    // Comment management
+    commentPop,
+    setCommentPop,
+    userComment,
+    setUserComment,
+
+    // Delete confirmation
+    toDelete,
+    setToDelete
+  }), [
+    postsList,
+    setPostsList,
+    deletePost,
+    comment,
+    setComment,
+    commentPop,
+    setCommentPop,
+    userComment,
+    setUserComment,
+    toDelete,
+    setToDelete
+  ]);
 
   const getPosts = async () => {
     try {
@@ -95,103 +129,103 @@ export const Home = () => {
     }
   }
 
-  const deletePost = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, 'posts', id))
-      setPostsList((prevPosts) => prevPosts ? prevPosts.filter((post) => post.id !== id) : null);
+  async function deletePost(id: string){
+  try {
+    await deleteDoc(doc(db, 'posts', id))
+    setPostsList((prevPosts) => prevPosts ? prevPosts.filter((post) => post.id !== id) : null);
 
+  }
+  catch (err) {
+    console.log(err)
+  }
+
+
+}
+
+
+useEffect(() => {
+  getPosts()
+}, [user?.displayName])
+
+
+// console.log(user?.uid)
+function isUserPost(id: string, userId: string) {
+  postsList?.map((post) => {
+
+    if (id === post.id && userId == undefined) {
+      setPopupId(id)
+      setPopup(id)
+      post.username === user?.displayName ? setUserPost(true) : setUserPost(false)
     }
-    catch (err) {
-      console.log(err)
+    if (id === post.id && userId == post.userId) {
+      setCommentPop({
+        userId: userId,
+        id: id
+      })
     }
 
+  })
 
-  }
+}
+function CheckUserId(PostId: string) {
+  return userList?.map((doc) => doc.userId === PostId ? doc.RandomId : null)
+}
 
+useEffect(() => {
+  const Prop = postsList?.map((post) => {
+    const profilePic = CheckUserId(post.userId)
+    return { ...post, profilePic: profilePic?.filter(post => post !== null) }
+  });
 
-  useEffect(() => {
-    getPosts()
-  }, [user?.displayName])
+  setProp(Prop as Posts[])
 
-
-  // console.log(user?.uid)
-  function isUserPost(id: string, userId: string) {
-    postsList?.map((post) => {
-
-      if (id === post.id && userId == undefined) {
-        setPopupId(id)
-        setPopup(id)
-        post.username === user?.displayName ? setUserPost(true) : setUserPost(false)
-      }
-      if (id === post.id && userId == post.userId) {
-        setCommentPop({
-          userId: userId,
-          id: id
-        })
-      }
-
-    })
-
-  }
-  function CheckUserId(PostId: string) {
-    return userList?.map((doc) => doc.userId === PostId ? doc.RandomId : null)
-  }
-
-  useEffect(() => {
-    const Prop = postsList?.map((post) => {
-      const profilePic = CheckUserId(post.userId)
-      return { ...post, profilePic: profilePic?.filter(post => post !== null) }
-    });
-
-    setProp(Prop as Posts[])
-
-  }, [postsList?.length])
+}, [postsList?.length])
 
 
-  return (
-    <>
-      <HomeContext.Provider value={{ deletePost, commentPop, setCommentPop, userComment, setUserComment, toDelete, setToDelete, postsList, setPostsList }}>
-        <div className=" relative grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
+return (
+  <>
+    <HomeContext.Provider value={homeContextValue}>
+      <div className=" relative grid grid-cols-1 max-[600px]:p-4 max-[600px]:mt-20  md:ml-[25vw]  
         pt-[75px]  ">
 
-          {
-            loading && Array.from({ length: 5 }).fill('').map((o, index) => {
-              console.log(o)
-              return <SKeletonPost
+        {
+          loading && Array.from({ length: 5 }).fill('').map((o, index) => {
+            console.log(o)
+            return <SKeletonPost
 
-                key={index}
-              />
+              key={index}
+            />
 
-            }) as []
-          }
+          }) as []
+        }
 
-          {
-            Prop?.map((post, index) =>
-              <Post
-                username={post.username}
-                profilePic={post.profilePic ?? ''}
-                img={post.image}
-                video={post.video}
-                text={post.text}
-                loading={loading}
-                id={post.id}
-                key={index}
-                userId={post.userId}
-                isUserPost={isUserPost}
+        {
+          Prop?.map((post, index) =>
+            <Post
+              username={post.username}
+              profilePic={post.profilePic ?? ''}
+              img={post.image}
+              video={post.video}
+              text={post.text}
+              loading={loading}
+              id={post.id}
+              key={index}
+              userId={post.userId}
+              isUserPost={isUserPost}
 
 
-              />
-            )
-          }
-        </div>
-      </HomeContext.Provider>
-      {/* {(displayOption) ?
+            />
+          )
+        }
+      </div>
+    </HomeContext.Provider>
+    {/* {(displayOption) ?
         (<div className={`bg-[#0000009a] fixed top-0 w-full h-full z-14`}>
          
         </div>):''
       } */}
-    </>
-  )
+  </>
+)
 
 }
 

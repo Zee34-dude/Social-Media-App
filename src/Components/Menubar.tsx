@@ -1,11 +1,12 @@
 
 import avatar from '../assets/60111.jpg'
 import { ProfileMenu } from './ProfileMenu'
-import { UserContext } from '../App'
+
 import React, { useContext, useRef, useEffect } from "react";
 import { Avatar } from './RandomAvatar';
-import { ImageContext } from './ImageProvider';
+import { ImageContext } from '../Context/ImageProvider';
 import { RxHamburgerMenu } from "react-icons/rx";
+import { stateContext } from '../Context/StateContext';
 
 
 interface MenubarProps {
@@ -15,7 +16,7 @@ interface MenubarProps {
 
 export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
-  const { setIsOpen, isOpen,setIsdragged,isdragged } = useContext(UserContext)
+  const { setIsOpen,isOpen,setIsdragged,isdragged } = useContext(stateContext)
   const { preview } = useContext(ImageContext)
  
 
@@ -40,7 +41,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
   return (
     <header className={` border-b border-b-[#b9b5b5ef] ${'fixed'} z-2 top-0 left-0 right-0 h-14 navbar`}>
-      <nav className="w-full h-full flex ">
+        <nav className="w-full h-full flex ">
         <ul className="flex w-full justify-center ">
           <li onClick={()=> {setIsdragged(!isdragged)}} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}

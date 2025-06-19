@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { auth } from '../config/Firebase';
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar } from "./RandomAvatar";
-import { ImageContext } from "./ImageProvider";
+import { ImageContext } from "../Context/ImageProvider";
 
 export const ProfileMenu = ({ isOpen, dropDownRef }: any) => {
 

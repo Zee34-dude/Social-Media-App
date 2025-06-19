@@ -4,13 +4,15 @@ import { BookMark } from '../SvgComponents/BookMark';
 import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../App";
 import { Popup } from "./MenuPopup";
-import { db } from "../config/Firebase";
+import { commentCollection, db } from "../config/Firebase";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { HomeContext } from "../pages/Home";
-import { themeContext } from "./ThemeContext";
+import { themeContext } from "../Context/ThemeContext.tsx";
 import { Comments } from "./Comments.tsx";
 import { MdClose } from "react-icons/md";
 import AutoPlayVideo from "./utilsComponents/AutoPlayVideo.tsx";
+import { commentUtils } from "../utils/commentUtils.ts";
+import { stateContext } from "../Context/StateContext.tsx";
 
 
 interface Props {
@@ -24,7 +26,7 @@ interface Props {
   isUserPost: Function
   video: string
 }
-export interface Comments {
+export interface Comment {
   comment: string,
   postId: string,
   userId: string
@@ -37,23 +39,19 @@ export interface Comments {
 export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, video }: Props) => {
   const [likesCount, setLikesCount] = useState<number>(0);
   const [liked, setLiked] = useState<boolean>(false);
-  const [comment, setComment] = useState<string | null>(null)
-  const [commentList, setCommentList] = useState<Comments[]>([])
-  const [volatileList, setVolatileList] = useState<Comments[]>([])
-  const [commentLoading, setCommentLoading] = useState(false)
-  const { user, popUpId } = useContext(UserContext);
-  const { commentPop, setCommentPop, setUserComment } = useContext(HomeContext)
+
+  const {popUpId, commentSectionRef } = useContext(stateContext);
+  const { user } = useContext(UserContext)
+  const { commentPop, setCommentPop } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
+  const { handleComment, comment, commentLoading, addComment, commentList, volatileList, setCommentList } = commentUtils()
   const postRef = useRef<HTMLSpanElement | null>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
-  const commentSectionRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const likesRef = collection(db, 'likes');
-  const commentsRef = collection(db, 'comments')
-  const commentsDoc = query(commentsRef, where('postId', '==', id))
+  const commentsDoc = query(commentCollection, where('postId', '==', id))
   const likesDoc = query(likesRef, where('postId', '==', id));
   const newLikedState = !liked;
-  const UserRef = collection(db, 'user')
-  const userDoc = query(UserRef, where('userId', '==', user?.uid));
+
   const [followed, setFollowed] = useState<boolean>(false)
   const followRef = collection(db, 'follow');
   const followDoc = query(followRef, where('userId', '==', userId))
@@ -66,7 +64,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
     const commentData = await getDocs(commentsDoc)
 
     setCommentList(
-      commentData.docs.map((doc) => ({ ...doc.data(), commentId: doc.id })) as Comments[]
+      commentData.docs.map((doc) => ({ ...doc.data(), commentId: doc.id })) as Comment[]
     );
 
   }
@@ -121,42 +119,9 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
 
   }, [id, user?.uid, commentList.length, followed]);
   // state that holds comment temporary
-  function handleComment(e: any) {
-    setComment(e.currentTarget.value)
-    console.log(e.currentTarget.value)
 
-  }
   //function that allows user to comment
-  async function addComment() {
-    if (inputRef.current) inputRef.current.value = '';
-    setCommentLoading(true)
-    const imageData = await getDocs(userDoc)
-    const img = imageData.docs[0].data().RandomId
-    try {
 
-      setCommentLoading(true)
-      if (comment !== null) {
-        await addDoc(commentsRef, {
-          postId: id,
-          userId: user?.uid,
-          comment: comment,
-          username: user?.displayName,
-          img: img
-        })
-      }
-
-    }
-    catch (err) {
-
-    }
-    finally {
-      setVolatileList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img, }] as Comments[])
-      setCommentList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img, }] as Comments[])
-
-      setCommentLoading(false)
-      setComment(null)
-    }
-  }
   useEffect(() => {
     const handleKeydown = (e: any) => {
       if (e.key === 'Enter') {
@@ -196,51 +161,29 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   }, [commentPop]);
 
 
-  const deleteComment = async (commentId: string) => {
-    setCommentList((comments) => comments ? comments.filter(cment => cment.commentId !== commentId) : [])
-    setVolatileList((comments) => comments ? comments.filter(cment => cment.commentId !== commentId) : [])
-    const cmentToDeleteData = doc(db, 'comments', commentId)
-    try {
-      await deleteDoc(cmentToDeleteData)
 
-    }
-    catch (err) {
-
-    }
-    finally {
-
-    }
-    console.log('money')
-  }
-
-
-
-  function isUserComment(commentId: string) {
-
-    commentList.map((comment) => {
-      if (commentId == comment.commentId) {
-        comment.username === user?.displayName ? setUserComment(true) : setUserComment(false)
-      }
-    })
-
-  }
   const newList: any = commentList.length > 0 ? commentList.map((doc, index) =>
-    //display if any comments 
-    <Comments
+  //display if any comments 
+
+  {
+    const userComment = user?.displayName == doc.username ? true : false
+    return <Comments
       username={doc.username}
       commentId={doc.commentId}
       comment={doc.comment}
       img={doc.img}
       key={index}
       commentSectionRef={commentSectionRef}
-      deleteComment={deleteComment}
       id={id}
       userId={userId}
-      isUserComment={isUserComment}
+      userComment={userComment}
+
 
 
 
     />
+  }
+
 
 
   ) : (
@@ -296,10 +239,10 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
           </span>
         </div>
         <div className="mt-4 relative h-[500px] max-[600px]:h-[min(400px,100vw)]">
-          {video ? <AutoPlayVideo src={video}  style={
-            {height:'100%'}
-            } className="'h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]" autoPlay={true} controls>
-              Your browser does not support the video tag.
+          {video ? <AutoPlayVideo src={video} style={
+            { height: '100%' }
+          } className="h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]" autoPlay={true} controls>
+            Your browser does not support the video tag.
           </AutoPlayVideo> : <img className='h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]' src={img} alt="" />
 
           }
@@ -347,7 +290,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
               borderBottomColor: 'transparent'
             }} className='spinner border-2 absolute right-[50%] top-2 w-5 h-5'> </div>
             }
-            {comment && <span onClick={addComment} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
+            {comment && <span onClick={() => addComment(inputRef, id)} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
             }   </div>
         </div>
       </div>

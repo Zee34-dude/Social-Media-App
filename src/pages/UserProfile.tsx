@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../App"
-import { themeContext } from "../Components/ThemeContext"
+import { themeContext } from "../Context/ThemeContext"
 import { UserPosts } from "../Components/User'sPosts"
 import { BsPostcardHeart } from "react-icons/bs";
 import { CiShare1 } from "react-icons/ci"
 import { Link } from "react-router-dom"
 import { Avatar } from "../Components/RandomAvatar"
-import { ImageContext } from "../Components/ImageProvider"
+import { ImageContext } from "../Context/ImageProvider"
 import { db } from "../config/Firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { User } from "../Components/RandomAvatar";

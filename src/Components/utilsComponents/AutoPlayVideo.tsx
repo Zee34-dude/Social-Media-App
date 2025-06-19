@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 
 
 // Main component
-const AutoPlayVideo = ({ src }:any) => {
+const AutoPlayVideo = ({ src,className }: any) => {
   // Reference to the <video> element in the DOM
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -17,10 +17,10 @@ const AutoPlayVideo = ({ src }:any) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // ✅ Play video when 60% or more is in view
+          //  Play video when 60% or more is in view
           video?.play();
         } else {
-          // ❌ Pause and reset video when not visible
+          //  Pause and reset video when not visible
           video?.pause();
         }
       },
@@ -34,7 +34,7 @@ const AutoPlayVideo = ({ src }:any) => {
     // Handle visibility changes (e.g., tab switch, minimize, return)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // ✅ When returning to tab, check if video is in view
+        //  When returning to tab, check if video is in view
         if (video) {
           const rect = video.getBoundingClientRect();
           const inView =
@@ -48,7 +48,7 @@ const AutoPlayVideo = ({ src }:any) => {
           }
         }
       } else {
-        // ❌ If tab is hidden or minimized, pause and reset
+        //  If tab is hidden or minimized, pause and reset
         video?.pause();
         if (video) video.currentTime = 0;
         console.log('Paused due to tab switch or minimize');
@@ -83,11 +83,12 @@ const AutoPlayVideo = ({ src }:any) => {
     <video
       ref={videoRef} // Connect ref to access DOM node
       src={src} // Video source URL
-      playsInline // ✅ Prevents full-screen playback on iOS
+      playsInline //  Prevents full-screen playback on iOS
       preload="metadata" // Load just enough to get video duration
       autoPlay={true} // Tries to autoplay (won't work unless muted)
-      className="h-full w-full object-cover scale-100 rounded-[3px] border-1 border-[#b9b5b58c]"
-     controls
+      className={className}
+      controls
+      muted
       style={{ height: '100%' }} // Ensure full height fill
     />
   );

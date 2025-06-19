@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom"
 import { interactionData } from "./interactions/interactionData"
 import { useContext } from "react"
-import { themeContext } from "../Components/ThemeContext"
+import { themeContext } from "../Context/ThemeContext"
 
 export interface Prop {
     activeTab: string

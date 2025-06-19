@@ -3,6 +3,7 @@ import { db } from "../../config/Firebase"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../../App"
 import RadialLoader from "../../GIfComponents/RadialLoader"
+import {useNavigate} from "react-router-dom"
 
 interface Likes { userId: string, postId: string, id: string }
 export const LikedPost = () => {
@@ -11,6 +12,7 @@ export const LikedPost = () => {
     const likeQuery = query(likesRef, where('userId', '==', user?.uid))
     const [likedData, setLikedData] = useState<{ like: Likes; post: any | null }[]>([])
     const [loading, setLoading] = useState<boolean>(false)
+    const navigate=useNavigate()
     useEffect(() => {
         const getLikedPost = async () => {
             setLoading(true)
@@ -23,7 +25,9 @@ export const LikedPost = () => {
                 likedata.map(async (like) => {
                     const postDocRef = doc(db, "posts", like.postId);
                     const postSnapshot = await getDoc(postDocRef);
-                    const post = postSnapshot.exists() ? postSnapshot.data() : null;
+                    const postData=postSnapshot.data()
+                    const id=postSnapshot.id
+                    const post = postSnapshot.exists() ? {...postData,id} : null;
 
                     return { like, post }
                 }))
@@ -36,6 +40,10 @@ export const LikedPost = () => {
         return <RadialLoader />
     }
 
+    function NavigateTopage(PostId:string): void {
+     navigate(`/p/${PostId}`)
+    }
+
     return (
         <div className="flex-1 p-6 overflow-auto pb-20">
             <div className="grid grid-cols-3 md:grid-cols-4 gap-1">
@@ -43,7 +51,9 @@ export const LikedPost = () => {
                     post &&
                     <div
                         key={like.id}
-                        className="relative aspect-square group cursor-pointer">
+                        className="relative aspect-square group cursor-pointer"
+                        onClick={()=>NavigateTopage(like.postId)}
+                        >
                         {
                             post.video ?
                                 <video muted controls={true} autoPlay className="w-full h-full object-cover rounded-sm" src={post.video}>

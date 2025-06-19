@@ -4,7 +4,7 @@ import { Appearance } from "../SvgComponents/Appearance";
 import { BookMark } from "../SvgComponents/BookMark";
 import { Activity } from "../SvgComponents/Activity";
 import { CiSettings } from "../SvgComponents/CiSetting";
-import { themeContext } from "./ThemeContext";
+import { themeContext } from "../Context/ThemeContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ModeChanger } from "./ModeChanger";
 import { UserContext } from "../App";
