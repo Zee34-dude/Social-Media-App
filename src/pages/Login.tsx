@@ -1,17 +1,19 @@
 import { auth, db, Provider } from "../config/Firebase";
-import { getRedirectResult, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import {  signInWithPopup} from "firebase/auth";
 import { Form } from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
-import { useContext, useEffect, useState } from "react";
+import { useContext,  useState } from "react";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { generateRandomId } from "../Components/RandomId";
 import DatabaseLandingAnimation from "../Components/LandingPageAnimation";
 import googleImage from "../assets/google.bc5e59cc.svg";
+import { stateContext } from "../Context/StateContext";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { user, setIsOpen } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const {setIsOpen}=useContext(stateContext)
   const docRef = collection(db, "user");
   const [loadingState, setLoadingState] = useState(false);
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

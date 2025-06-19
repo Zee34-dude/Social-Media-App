@@ -1,8 +1,9 @@
-import { useContext,  useState } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../App";
 import { HomeContext } from "../pages/Home";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/Firebase";
+import { stateContext } from "../Context/StateContext";
 
 interface MenubarProps {
   id: string
@@ -11,7 +12,8 @@ interface MenubarProps {
   setFollowed: Function
 }
 export const Popup = ({ userId, followed, setFollowed }: MenubarProps) => {
-  const { userPost, menuRef, popUpId, user } = useContext(UserContext)
+  const { userPost, menuRef, popUpId } = useContext(stateContext)
+  const { user } = useContext(UserContext)
   const { deletePost } = useContext(HomeContext)
   const [loader, setLoader] = useState<boolean>(false)
   const followRef = collection(db, 'follow');
@@ -58,12 +60,12 @@ export const Popup = ({ userId, followed, setFollowed }: MenubarProps) => {
           </>
 
         }
-        {!userPost && (followed ? <div onClick={loader?undefined:removeFollow}
+        {!userPost && (followed ? <div onClick={loader ? undefined : removeFollow}
           className="w-full text-center py-4 border-b border-[#d4d4d4c9] relative 
           flex items-center justify-center  text-[0.85rem] text-red-500">{loader ? <div className='spinner border-2  border-[#5b5b5c] border-b-transparent  w-5 h-5'></div>
             : 'Unfollow'}</div>
           :
-          <div onClick={loader?undefined:addFollow}
+          <div onClick={loader ? undefined : addFollow}
             className="w-full text-center relative py-4 border-b border-[#d4d4d4c9] flex 
             items-center justify-center  text-[0.85rem] text-red-500">{loader ? <div className='spinner border-2 border-[#5b5b5c]  border-b-transparent w-5 h-5'></div>
               : 'Follow'}</div>)}

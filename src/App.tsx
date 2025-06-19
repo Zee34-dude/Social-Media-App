@@ -44,6 +44,7 @@ function App() {
   const [isPost, setIsPost] = useState<boolean>(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const [popUpId, setPopupId] = useState<string | null>(null)
+
   const [activeTab, setActiveTab] = useState<string>(localStorage.getItem(`tabId${user?.uid}` as string) || 'likes')
   // useEffect(() => {
   //   if (user) {

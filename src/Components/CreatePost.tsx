@@ -3,6 +3,7 @@ import { UserContext } from "../App"
 import { db } from '../config/Firebase'
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { ClipLoader } from 'react-spinners';
+import { stateContext } from "../Context/StateContext";
 
 
 
@@ -23,7 +24,8 @@ export const CreatePost: React.FC<MenubarProps> = ({ setIsPost, override }) => {
   const InputRef = useRef<HTMLInputElement>(null)
   const Cloud_name = 'zion123'
   const preset = 'zion-uploads'
-  const { user, postRef } = useContext(UserContext)
+  const { user } = useContext(UserContext)
+  const {postRef}=useContext(stateContext)
   const postsRef = collection(db, 'posts')
   const UserRef = collection(db, 'user')
   const userQuery = query(UserRef, where('userId', '==', user?.uid))

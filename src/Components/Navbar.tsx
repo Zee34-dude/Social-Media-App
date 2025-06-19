@@ -7,12 +7,12 @@ import { CiSettings } from "../SvgComponents/CiSetting";
 import { themeContext } from "../Context/ThemeContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ModeChanger } from "./ModeChanger";
-import { UserContext } from "../App";
+import { stateContext } from "../Context/StateContext";
 
 export default function Navbar() {
 
   const { toggleTheme, theme, setShowMode, showMode } = useContext(themeContext)
-  const { isdragged, setIsdragged } = useContext(UserContext)
+  const { isdragged, setIsdragged } = useContext(stateContext)
   const appearanceRef = useRef<{
     [key: string]: HTMLDivElement | null
   }>({})
