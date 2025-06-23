@@ -1,50 +1,22 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../App";
 import { HomeContext } from "../pages/Home";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
-import { db } from "../config/Firebase";
 import { stateContext } from "../Context/StateContext";
+import {followUtils} from '../utils/followUtils'
 
 interface MenubarProps {
   id: string
   userId: string
-  followed: boolean
-  setFollowed: Function
+  followed:boolean
 }
-export const Popup = ({ userId, followed, setFollowed }: MenubarProps) => {
+export const Popup = ({ userId,followed}: MenubarProps) => {
   const { userPost, menuRef, popUpId } = useContext(stateContext)
   const { user } = useContext(UserContext)
   const { deletePost } = useContext(HomeContext)
-  const [loader, setLoader] = useState<boolean>(false)
-  const followRef = collection(db, 'follow');
-  const followDoc = query(followRef, where('userId', '==', userId))
-
-  const addFollow = async () => {
-    setLoader(true)
-    try {
-      await addDoc(followRef,
-        { userId: userId, followerId: user?.uid })
-    }
-    catch {
-
-    }
-    finally {
-      setFollowed(true)
-      setLoader(false)
-    }
-
-  }
-  const removeFollow = async () => {
-    setLoader(true)
-    const followerData = await getDocs(followDoc)
-    const deleteId = doc(db, 'follow', followerData.docs[0].id)
-    await deleteDoc(deleteId)
-    setFollowed(false)
-    setLoader(false)
-  }
+  const {addFollow,removeFollow,loader}=followUtils()
 
 
-
+ 
   return (
     <div ref={menuRef} className={` animate-slide-up center-div fixed ${userPost ? 'top-[20%]' : 'top-[30%]'} z-12 `}>
       <div className="create-post w-[300px]  rounded-[5px] flex flex-col items-center  ">
@@ -60,15 +32,17 @@ export const Popup = ({ userId, followed, setFollowed }: MenubarProps) => {
           </>
 
         }
-        {!userPost && (followed ? <div onClick={loader ? undefined : removeFollow}
+        {!(userId===user?.uid) &&
+         (followed ? <div onClick={loader ? undefined : ()=>removeFollow(userId)}
           className="w-full text-center py-4 border-b border-[#d4d4d4c9] relative 
           flex items-center justify-center  text-[0.85rem] text-red-500">{loader ? <div className='spinner border-2  border-[#5b5b5c] border-b-transparent  w-5 h-5'></div>
             : 'Unfollow'}</div>
           :
-          <div onClick={loader ? undefined : addFollow}
+          <div onClick={loader ? undefined : ()=>addFollow(userId)}
             className="w-full text-center relative py-4 border-b border-[#d4d4d4c9] flex 
             items-center justify-center  text-[0.85rem] text-red-500">{loader ? <div className='spinner border-2 border-[#5b5b5c]  border-b-transparent w-5 h-5'></div>
-              : 'Follow'}</div>)}
+              : 'Follow'}</div>)
+              }
         <div className="w-full text-center py-4 border-b border-[#d4d4d4c9]  text-[0.85rem]  ">Go to post </div>
         <div className="w-full text-center py-4 border-b border-[#d4d4d4c9]  text-[0.85rem] ">Copy link</div>
         <div className="w-full text-center py-4 border-b border-[#d4d4d4c9]  text-[0.85rem] ">About this account</div>

@@ -14,6 +14,7 @@ import AutoPlayVideo from "./utilsComponents/AutoPlayVideo.tsx";
 import { commentUtils } from "../utils/commentUtils.ts";
 import { stateContext } from "../Context/StateContext.tsx";
 import { Heart } from "lucide-react";
+import { followUtils } from "../utils/followUtils.ts";
 
 
 interface Props {
@@ -53,13 +54,14 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   const commentsDoc = query(commentCollection, where('postId', '==', id))
   const likesDoc = query(likesRef, where('postId', '==', id));
   const newLikedState = !liked;
-  const [followed, setFollowed] = useState<boolean>(false)
   const followRef = collection(db, 'follow');
   const followDoc = query(followRef, where('userId', '==', userId))
+  const { setFollowed,followed } = followUtils()
   const fetchFollowers = async () => {
     const followerData = await getDocs(followDoc)
     const userFollowed = followerData.docs.find(doc => doc.data().followerId == user?.uid)
     setFollowed(!!userFollowed)
+    console.log('money no')
   }
   const getComments = async () => {
     const commentData = await getDocs(commentsDoc)
@@ -118,7 +120,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
     fetchLikes();
     fetchFollowers()
 
-  }, [id, user?.uid, commentList.length, followed]);
+  }, [id, user?.uid, commentList.length]);
   // state that holds comment temporary
 
   //function that allows user to comment
@@ -212,7 +214,6 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
           id={id}
           userId={userId}
           followed={followed}
-          setFollowed={setFollowed}
 
         />}
       {/* comment section */}

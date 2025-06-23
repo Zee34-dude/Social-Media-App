@@ -2,12 +2,13 @@ import { getDocs, query, where } from "firebase/firestore"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { followCollection } from "../config/Firebase"
 import { UserContext } from "../App"
+import { followUtils } from "../utils/followUtils"
 
 interface contextType {
     followsCount: any,
     followingCount: any,
     setFollowsCount: (followsCount: any) => void,
-    setFollowingCount: (followingCount:any ) => void
+    setFollowingCount: (followingCount: any) => void
 }
 export const FirebaseContext = createContext<contextType>({
     followsCount: 0,
@@ -21,6 +22,8 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
     const { user } = useContext(UserContext)
     const [followsCount, setFollowsCount] = useState<any>([])
     const [followingCount, setFollowingCount] = useState<any>([])
+    const {followed}=followUtils()
+
 
     useEffect(() => {
         const fetchFollowers = async () => {
@@ -36,7 +39,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
 
         }
         fetchFollowers()
-    }, [user?.uid])
+    }, [user?.uid,followed])
 
 
 
