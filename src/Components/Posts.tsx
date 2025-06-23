@@ -1,4 +1,4 @@
-import { SlLike } from "react-icons/sl";
+
 import { CiShare1 } from "react-icons/ci";
 import { BookMark } from '../SvgComponents/BookMark';
 import { useContext, useEffect, useRef, useState } from "react";
@@ -13,6 +13,7 @@ import { MdClose } from "react-icons/md";
 import AutoPlayVideo from "./utilsComponents/AutoPlayVideo.tsx";
 import { commentUtils } from "../utils/commentUtils.ts";
 import { stateContext } from "../Context/StateContext.tsx";
+import { Heart } from "lucide-react";
 
 
 interface Props {
@@ -39,9 +40,10 @@ export interface Comment {
 export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, video }: Props) => {
   const [likesCount, setLikesCount] = useState<number>(0);
   const [liked, setLiked] = useState<boolean>(false);
-
-  const {popUpId, commentSectionRef } = useContext(stateContext);
+  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const commentBtnRef = useRef<HTMLDivElement | null>(null)
   const { user } = useContext(UserContext)
+  const { popUpId } = useContext(stateContext)
   const { commentPop, setCommentPop } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
   const { handleComment, comment, commentLoading, addComment, commentList, volatileList, setCommentList } = commentUtils()
@@ -51,7 +53,6 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   const commentsDoc = query(commentCollection, where('postId', '==', id))
   const likesDoc = query(likesRef, where('postId', '==', id));
   const newLikedState = !liked;
-
   const [followed, setFollowed] = useState<boolean>(false)
   const followRef = collection(db, 'follow');
   const followDoc = query(followRef, where('userId', '==', userId))
@@ -134,20 +135,26 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
 
       }
     }
+
     document.addEventListener('keydown', handleKeydown)
     return () => {
       document.removeEventListener('keydown', handleKeydown)
     }
-
   }, [])
 
-
+  useEffect(() => {
+    console.log(popUpId)
+  }, [popUpId])
 
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
-      if (commentSectionRef.current['first'] && commentSectionRef.current['second'] && !commentSectionRef.current['first']?.contains(event.target as Node) && !commentSectionRef.current['second']?.contains(event.target as Node)) {
+      if (commentsRef.current['second'] && commentsRef.current['first'] &&
+        commentBtnRef.current && !commentsRef.current['first']?.contains(event.target as Node) &&
+        !commentsRef.current['second']?.contains(event.target as Node) &&
+        !commentBtnRef.current?.contains(event.target as Node)) {
         setCommentPop(null)
+        console.log(commentBtnRef.current)
       }
     }
 
@@ -173,8 +180,8 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
       comment={doc.comment}
       img={doc.img}
       key={index}
-      commentSectionRef={commentSectionRef}
       id={id}
+      commentsRef={commentsRef}
       userId={userId}
       userComment={userComment}
 
@@ -213,7 +220,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
 
         <div className="fixed z-12 top-[20%] min-[768px]:left-[25%] animate-pop w-full">
 
-          <div ref={el => (commentSectionRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} min-[768px]:w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
+          <div ref={el => (commentsRef.current['first'] = el)} className={`${theme == 'dark' ? `bg-[#1b1c1d]` : 'bg-[#ffffff]'} min-[768px]:w-[50%] h-[400px] min-w-[300px] rounded-[5px] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]`}>
             <div className="w-full border-b-[#adadad] border-b text-center py-2">Comments</div>
             {/* comment list */}
             <div className="p-4">{newList}</div>
@@ -251,17 +258,17 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
           <div className='flex mt-4'>
             <span className='flex items-center gap-5 pl-2'>
               <div className="flex items-center gap-1" >
-                <SlLike onClick={handleLike} className={`w-[1rem] h-[1rem] ${liked ? 'text-red-500' : 'text-gray-500'}`} />
+                <Heart onClick={handleLike} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />
                 <p>{likesCount}</p>
               </div>
-              <div className="flex items-center gap-1">
-                <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="16" icon-name="comment-outline" viewBox="0 0 20 20" width="16">
+              <div onClick={() => isUserPost(id, userId)} ref={commentBtnRef} className="flex items-center gap-1">
+                <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="20" icon-name="comment-outline" viewBox="0 0 20 20" width="20">
                   <path d="M10 19H1.871a.886.886 0 0 1-.798-.52.886.886 0 0 1 .158-.941L3.1 15.771A9 9 0 1 1 10 19Zm-6.549-1.5H10a7.5 7.5 0 1 0-5.323-2.219l.54.545L3.451 17.5Z"></path>
                 </svg>
                 <p>{commentList.length}</p>
               </div>
               <div>
-                <CiShare1 className='w-[1.2rem] h-[1.2rem]' />
+                <CiShare1 className='w-6 h-6' />
               </div>
             </span>
             <span className='ml-auto'>
@@ -279,7 +286,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
             </div>
           </div>
           <div className="comments ">
-            <p ref={el => (commentSectionRef.current.second = el)} onClick={() => isUserPost(id, userId)} className="text-[12px] w-30 text-[#7c7a7a] mt-2">View all Comments...</p>
+            <p ref={el => (commentsRef.current.second = el)} onClick={() => isUserPost(id, userId)} className="text-[12px] w-30 text-[#7c7a7a] mt-2">View all Comments...</p>
           </div>
           <div className="w-full mt-4 relative">
             <textarea name="textarea" onChange={handleComment} ref={inputRef} placeholder="Add comment..." className="w-full text-xs resize-none outline-0">

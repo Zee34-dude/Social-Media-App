@@ -1,41 +1,40 @@
-import { MutableRefObject, useContext, useEffect, useRef, useState } from "react"
-import { HomeContext } from "../pages/Home"
+import { MutableRefObject,  useRef, useState } from "react"
+
 import { commentUtils } from "../utils/commentUtils"
 interface Prop {
     username: string
     commentId: string
     comment: string
     img: string
-    commentSectionRef: MutableRefObject<{ [key: string]: HTMLDivElement | null }>
+    commentsRef: MutableRefObject<{ [key: string]: HTMLDivElement | null }>
     id: string,
     userId: string,
     userComment:boolean
 }
 
-export const Comments = ({ username, commentId, comment, img, commentSectionRef,userComment }: Prop) => {
+export const Comments = ({ username, commentId, comment, img, commentsRef: userComment }: Prop) => {
 
     const [showOptions, setShowOptions] = useState(false);
-    const { setCommentPop, commentPop } = useContext(HomeContext)
     const { deleteComment } = commentUtils()
     const cancelRef = useRef<HTMLDivElement | null>(null)
     //Remove the comment section, if click Event occurs outside the comment section 
-    useEffect(() => {
-        function handleClick(event: MouseEvent) {
-            if (commentSectionRef.current['first'] && commentSectionRef.current['second']
-                && !commentSectionRef.current['first']?.contains(event.target as Node) &&
-                !commentSectionRef.current['second']?.contains(event.target as Node) && !cancelRef.current?.contains(event.target as Node)) {
-                setCommentPop(null)
+    // useEffect(() => {
+    //     function handleClick(event: MouseEvent) {
+    //         if (commentsRef.current['first'] && commentsRef.current['second']
+    //             && !commentsRef.current['first']?.contains(event.target as Node) &&
+    //             !commentsRef.current['second']?.contains(event.target as Node) && !cancelRef.current?.contains(event.target as Node)) {
+    //             setCommentPop(null)
 
-            }
-        };
+    //         }
+    //     };
 
-        document.addEventListener('click', handleClick);
+    //     document.addEventListener('click', handleClick);
 
-        //Remove the Event Listener if no click
-        return () => {
-            document.removeEventListener('click', handleClick);
-        };
-    }, [commentPop, showOptions]);
+    //     //Remove the Event Listener if no click
+    //     return () => {
+    //         document.removeEventListener('click', handleClick);
+    //     };
+    // }, [commentPop, showOptions]);
 
 
 

@@ -4,7 +4,7 @@ import { ProfileMenu } from './ProfileMenu'
 
 import React, { useContext, useRef, useEffect } from "react";
 import { Avatar } from './RandomAvatar';
-import { ImageContext } from '../Context/ImageProvider';
+import { ImageContext } from '../Context/ImageContext';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { stateContext } from '../Context/StateContext';
 

@@ -1,7 +1,7 @@
 export const interactionData = [
   {
     interaction: 'LIKES',
-    tab: 'likes',
+    tab: 'LikedPost',
     to: '/activity/interactions/LikedPost',
     svg: (
       <svg className="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24">
@@ -11,7 +11,7 @@ export const interactionData = [
   },
   {
     interaction: 'COMMENTS',
-    tab: 'comments',
+    tab: 'CommentedPost',
     to: '/activity/interactions/CommentedPost',
     svg: (
       <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">

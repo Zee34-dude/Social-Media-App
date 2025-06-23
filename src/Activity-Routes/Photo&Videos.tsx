@@ -8,7 +8,7 @@ export const PhotoVideos = ({ activeTab, handleActiveTab }: Prop) => {
             <div className="border-b border-gray-800 pt-2">
                 <div className="flex justify-center">
                     <Link to='/activity/Photovideos/UserPost'>
-                        <button onClick={() => handleActiveTab('post')} className={`px-6 py-4 flex gap-2 items-center text-sm font-medium 
+                        <button onClick={() => handleActiveTab('UserPost')} className={`px-6 py-4 flex gap-2 items-center text-sm font-medium 
              ${activeTab == 'post' && `border-white border-b-2`} `}>
                           <BsPostcardHeart className='w-[1.2rem] h-[1.2rem]' />
                             POST

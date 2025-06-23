@@ -6,19 +6,21 @@ import { BsPostcardHeart } from "react-icons/bs";
 import { CiShare1 } from "react-icons/ci"
 import { Link } from "react-router-dom"
 import { Avatar } from "../Components/RandomAvatar"
-import { ImageContext } from "../Context/ImageProvider"
-import { db } from "../config/Firebase";
+import { ImageContext } from "../Context/ImageContext"
+import { db} from "../config/Firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { User } from "../Components/RandomAvatar";
+import { FirebaseContext } from "../Context/FirebaseContext";
 
 
 export const UserProfile = () => {
   const [userInfo, setUserInfo] = useState<User[] | null>(null)
-  const [followerCount, setFollowCount] = useState<number>(0)
-  const [followingCount,setFollowingCount]=useState<number>(0)
+ 
   const { user } = useContext(UserContext)
   const { theme } = useContext(themeContext)
   const { preview } = useContext(ImageContext)
+  const {followingCount,followsCount}=useContext(FirebaseContext)
+ 
   const userRef = collection(db, 'user')
   const queryData = query(userRef, where('userId', '==', user?.uid))
   const getUserBio = async () => {
@@ -28,22 +30,10 @@ export const UserProfile = () => {
     )
 
   }
-  const followRef = collection(db, 'follow');
-  const followDoc = query(followRef, where('userId', '==', user?.uid))
-  const followerDoc = query(followRef, where('followerId', '==', user?.uid))
-  const fetchFollowers = async () => {
-    const followerData = await getDocs(followDoc)
-    const followingData=await getDocs(followerDoc)
-    setFollowCount(followerData.docs.length)
-    setFollowingCount(followingData.docs.length)
 
-
-
-  }
-  useEffect(() => {
-    getUserBio()
-    fetchFollowers()
-  }, [])
+useEffect(()=>{
+  getUserBio()
+})
 
   return (
     <div className="w-full pb-38">
@@ -72,8 +62,8 @@ export const UserProfile = () => {
 
           <div className=" md:w-[88%] w-[100%] flex justify-center gap-6 pt-20 text-xl ">
             <span>0 posts</span>
-            <span>{followerCount} followers</span>
-            <span>{followingCount} following</span>
+            <span>{followsCount.length} followers</span>
+            <span>{followingCount.length} following</span>
           </div>
           <div className=" w-[100%] border-gray-400 mt-30">
             <div className=" border-t h-full  md:w-[88%]  flex  justify-center gap-10 text-[0.875rem] pt-2">

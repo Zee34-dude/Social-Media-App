@@ -11,59 +11,56 @@ import { commentUtils } from "../utils/commentUtils"
 import { Comments } from "../Components/Comments"
 import { UserContext } from "../App"
 import AutoPlayVideo from "../Components/utilsComponents/AutoPlayVideo"
-import { stateContext } from "../Context/StateContext"
 
-
-
+import { FirebaseContext } from "../Context/FirebaseContext"
 
 export default function ViewPostPage() {
   const [isLiked, setIsLiked] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
   const [postData, setPostData] = useState<Posts | null>(null)
-  const [commentData, setCommentData] = useState<Comment[] | null>([])
+  const [commentData, setCommentData] = useState<Comment[]>([])
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const { user } = useContext(UserContext)
-  const { commentSectionRef } = useContext(stateContext)
+  const { followingCount } = useContext(FirebaseContext)
+  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const { addComment, commentLoading, handleComment, comment } = commentUtils()
-
   const { id } = useParams()
-
   const [showComments, setShowComments] = useState(false)
 
   useEffect(() => {
     const fetchPost = async () => {
-
       if (id) {
         const postRef = doc(db, 'posts', id)
         const commentQuery = query(commentCollection, where('postId', '==', id))
         const postSnapshot = await getDoc(postRef)
-        postSnapshot.exists() ? setPostData(postSnapshot.data() as Posts) : null
+        if (postSnapshot.exists()) {
+          setPostData(postSnapshot.data() as Posts)
+        } else {
+          setPostData(null)
+        }
+
         const qData = await getDocs(commentQuery)
         setCommentData(qData.docs.map((doc) => ({ ...doc.data(), commentId: doc.id })) as Comment[])
-
       }
-
     }
 
     fetchPost()
-  })
+  }, [id])
 
+  useEffect(() => {
+    if (followingCount && postData && user) {
+      const followingUserId = followingCount.find((post: any) => post.userId === postData?.userId)
+      console.log(followingCount, postData?.userId)
+      setIsFollowing(!!followingUserId)
+    }
+  }, [followingCount, postData, user])
 
 
 
 
   return (
     <div className="min-h-screen pl-0 pt-0 lg:pl-64 md:pl-15 lg:pt-14">
-      {/* Mobile Header */}
-      {/* <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-50 px-4 py-3 border-b"
-        style={{ borderColor: "var(--border-color)" }}
-      >
-        <div className="flex items-center gap-4">
-          <ChevronLeft className="w-6 h-6 cursor-pointer" />
-          <span className="font-semibold">Post</span>
-        </div>
-      </div> */}
 
       <div className="max-w-6xl mx-auto px-2 lg:px-4">
         <div className="flex flex-col lg:flex-row lg:gap-8">
@@ -85,7 +82,7 @@ export default function ViewPostPage() {
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm">{postData?.username}</span>
                     <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                    <span className="text-[#3c42d6]  text-sm">Following</span>
+                    <span className="text-[#3c42d6]  text-sm">{isFollowing ? 'Following' : 'Follow'}</span>
                   </div>
                 </div>
                 <MoreHorizontal className="w-6 h-6 cursor-pointer" />
@@ -133,7 +130,7 @@ export default function ViewPostPage() {
                 <div className="text-xs"></div>
 
                 {/* Add Comment */}
-                <div className="flex items-center gap-3 pt-4 border-t border-skin">
+                <div className="flex items-center gap-3 relative pt-4 border-t border-skin">
                   <Smile className="w-6 h-6 cursor-pointer" />
                   <input
                     type="text"
@@ -142,9 +139,13 @@ export default function ViewPostPage() {
                     onChange={handleComment}
                     className="flex-1 bg-transparent text-sm placeholder-gray-400 outline-none"
                   />
+                  {commentLoading && <div style={{
+                    borderColor: '#5b5b5c',
+                    borderBottomColor: 'transparent'
+                  }} className="spinner border-2 absolute right-[50%] top-4 w-5 h-5"> </div>}
                   {comment && id && <button onClick={() => addComment(inputRef, id)} className="text-blue-500 text-sm font-semibold">Post</button>}
                 </div>
-                <div> {commentLoading && "loading"}</div>
+
               </div>
             </div>
           </div>
@@ -161,38 +162,15 @@ export default function ViewPostPage() {
                     comment={doc.comment}
                     img={doc.img}
                     key={index}
-                    commentSectionRef={commentSectionRef}
                     id={id}
                     userId={doc.userId}
                     userComment={userComment}
+                    commentsRef={commentsRef}
 
-                  />)
-                // <div key={comment.id} className="flex gap-3">
-                //   <img
-                //     src={comment.img || "/placeholder.svg"}
-                //     alt={comment.username}
-                //     className="w-8 h-8 rounded-full flex-shrink-0 object-cover"
-                //   />
-                //   <div className="flex-1">
-                //     <div className="flex items-start justify-between">
-                //       <div>
-                //         <span className="font-semibold text-sm mr-2">{comment.username}</span>
-                //         <span className="text-gray-300 text-sm">{'1 w ago'}</span>
-                //       </div>
-                //       <Heart className="w-3 h-3 cursor-pointer hover:opacity-70" />
-                //     </div>
-                //     <p className="text-sm mt-1 text-gray-100">{comment.comment}</p>
-                //     <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
-                //       <span> likes</span>
-                //       <button className="hover:text-gray-300">Reply</button>
-                //     </div>
-                //     {true && (
-                //       <button className="text-xs text-gray-400 mt-2 hover:text-gray-300">
-                //         View all 12 replies
-                //       </button>
-                //     )}
-                //   </div>
-                // </div>
+
+                  />
+
+                )
               })}
             </div>
           </div>

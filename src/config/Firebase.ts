@@ -25,6 +25,7 @@ const Provider = new GoogleAuthProvider
 const db = getFirestore(app)
 const storage = getStorage(app)
 const commentCollection = collection(db, 'comments')
-  const userCollection = collection(db, 'user')
- 
-export {db,auth,app,Provider,storage,commentCollection,userCollection}
+const userCollection = collection(db, 'user')
+const followCollection = collection(db, 'follow');
+
+export { db, auth, app, Provider, storage, commentCollection, userCollection, followCollection }

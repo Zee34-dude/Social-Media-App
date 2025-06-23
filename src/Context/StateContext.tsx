@@ -12,7 +12,6 @@ interface stateContextType {
   setPopupId: (popUpId: string | null) => void
   isdragged: boolean
   setIsdragged: (isdragged: boolean) => void
-  commentSectionRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>
 }
 export const stateContext = createContext<stateContextType>({
     postRef: { current: null },
@@ -27,13 +26,13 @@ export const stateContext = createContext<stateContextType>({
     setPopupId: () => { },
     isdragged: false,
     setIsdragged: () => { },
-    commentSectionRef: { current: {} },
+ 
 })
 
 export const StateProvider = ({ children }: { children: React.ReactNode }) => {
     const postRef = useRef<HTMLFormElement>(null)
     const menuRef = useRef<HTMLDivElement>(null)
-    const commentSectionRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [popUp, setPopup] = useState<string | null>(null)
     const [userPost, setUserPost] = useState(false)
@@ -53,7 +52,7 @@ export const StateProvider = ({ children }: { children: React.ReactNode }) => {
         setPopupId,
         isdragged,
         setIsdragged,
-        commentSectionRef
+       
     }
     return (
         <stateContext.Provider value={stateContextvalue} >

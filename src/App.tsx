@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './App.css'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import Navbar from './Components/Navbar'
-import { createContext, useState, useEffect, useRef, CSSProperties } from 'react'
+import { createContext, useState, useEffect, CSSProperties } from 'react'
 import { auth } from './config/Firebase'
 import { CreatePost } from './Components/CreatePost'
 import { MdClose } from "react-icons/md";
@@ -15,7 +15,7 @@ import { ThemeProvider } from './Context/ThemeContext'
 import { UserProfile } from './pages/UserProfile'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { EditProfile } from './pages/Editprofile'
-import { ImageProvider } from './Context/ImageProvider'
+import { ImageProvider } from './Context/ImageContext'
 import { Activity } from './pages/ActivityPage'
 import { UserPost } from './Activity-Routes/Photo&Videos/UserPost'
 import { LikedPost } from './Activity-Routes/interactions/LIkedPosts'
@@ -24,6 +24,7 @@ import { Interactions } from './Activity-Routes/Interactions'
 import { PhotoVideos } from './Activity-Routes/Photo&Videos'
 import ViewPostPage from './pages/ViewPostPage'
 import { StateProvider } from './Context/StateContext'
+import { FirebaseProvider } from './Context/FirebaseContext'
 //state type specification
 interface UserContextType {
   user: User | null;
@@ -42,22 +43,19 @@ function App() {
   const [user, setUser] = useState<User | null>(null)
   const [authInitialized, setAuthInitialized] = useState(false)
   const [isPost, setIsPost] = useState<boolean>(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const [popUpId, setPopupId] = useState<string | null>(null)
 
-  const [activeTab, setActiveTab] = useState<string>(localStorage.getItem(`tabId${user?.uid}` as string) || 'likes')
+
+  const [activeTab, setActiveTab] = useState<string>('LikedPost')
   // useEffect(() => {
   //   if (user) {
-  //     const savedTab = localStorage.getItem(`tabId${user.uid}`) || 'likes';
+  //     const savedTab = localStorage.getItem(`tabId${user.uid}`) || 'LikedPost';
   //     setActiveTab(savedTab);
   //   }
+  //   console.log(activeTab)
   // }, [user]);
 
   const handleActiveTab = (tabId: string) => {
     setActiveTab(tabId)
-    // if (user) {
-    //   localStorage.setItem(`tabId${user.uid}`, tabId);
-    // }
   }
   const client = new QueryClient({
     defaultOptions:
@@ -84,7 +82,7 @@ function App() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [auth]);
 
-  
+
 
   const override: CSSProperties = {
     position: "absolute",
@@ -92,21 +90,6 @@ function App() {
     left: '45%',
 
   }
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setPopupId(null)
-
-      }
-    }
-
-    document.addEventListener('mousedown', handleClick)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-    };
-  }, [])
 
 
   if (!authInitialized) {
@@ -118,62 +101,69 @@ function App() {
       <ImageProvider>
         <ThemeProvider>
           <UserContext.Provider value={{ user, setUser, setAuthInitialized }}>
+
             <QueryClientProvider client={client}>
-              <StateProvider>
-                <Router>
-                  {user && <Menubar
-                    setIsPost={setIsPost}
-                    isPost={isPost}
+              <FirebaseProvider>
+                <StateProvider>
 
-                  />
+                  <Router>
+                    {user && <Menubar
+                      setIsPost={setIsPost}
+                      isPost={isPost}
 
-                  }
-                  {user && <Navbar />}
-                  {isPost && <CreatePost
-                    override={override}
-                    setIsPost={setIsPost}
-                    isPost={isPost}
-                  />}
+                    />
 
-                  <Routes>
-                    <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
-                    <Route path="/login" element={<Login />} />
-                    {<Route path='/register' element={<Register />} />}
-                    <Route path='/user-profile' element={<UserProfile />} />
-                    <Route path='/edit-profile' element={<EditProfile />} />
-                    <Route path='/p/:id' element={<ViewPostPage />} />
-                    <Route path="/activity" element={<Activity />}>
-                      <Route path='interactions' element={<Interactions
-                        activeTab={activeTab}
-                        handleActiveTab={handleActiveTab}
+                    }
+                    {user && <Navbar />}
+                    {isPost && <CreatePost
+                      override={override}
+                      setIsPost={setIsPost}
+                      isPost={isPost}
+                    />}
+
+                    <Routes>
+                      <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+                      <Route path="/login" element={<Login />} />
+                      {<Route path='/register' element={<Register />} />}
+                      <Route path='/user-profile' element={<UserProfile />} />
+                      <Route path='/edit-profile' element={<EditProfile />} />
+                      <Route path='/p/:id' element={<ViewPostPage />} />
+                      <Route path="/activity" element={<Activity
                       />}>
-                        <Route path='CommentedPost' element={<CommentedPost />} />
-                        <Route path='LikedPost' element={<LikedPost />} />
+                        <Route path='interactions' element={<Interactions
+                          activeTab={activeTab}
+                          handleActiveTab={handleActiveTab}
+                          setActiveTab={setActiveTab}
+                        />}>
+                          <Route path='CommentedPost' element={<CommentedPost />} />
+                          <Route path='LikedPost' element={<LikedPost />} />
+                        </Route>
+                        <Route path='photovideos' element={<PhotoVideos
+                          activeTab={activeTab}
+                          handleActiveTab={handleActiveTab}
+                          setActiveTab={setActiveTab} />}>
+                          <Route path='UserPost' element={<UserPost
+
+                          />} />
+                        </Route>
                       </Route>
-                      <Route path='photovideos' element={<PhotoVideos
-                        activeTab={activeTab}
-                        handleActiveTab={handleActiveTab} />}>
-                        <Route path='UserPost' element={<UserPost
 
-                        />} />
-                      </Route>
-                    </Route>
+                    </Routes>
+                    <Routes>
 
-                  </Routes>
-                  <Routes>
-
-                    {/* Other routes */}
-                  </Routes>
-                </Router>
-              </StateProvider>
+                      {/* Other routes */}
+                    </Routes>
+                  </Router>
+                </StateProvider>
+              </FirebaseProvider>
             </QueryClientProvider>
           </ UserContext.Provider>
         </ThemeProvider>
       </ImageProvider>
 
-      {(popUpId || isPost) &&
+      {(isPost) &&
         (<div className={`bg-[#0000009a] fixed top-0 w-full h-full z-3`}>
-          <div onClick={() => { setIsPost(false), setPopupId(null) }} className='fixed right-10 top-14'>
+          <div onClick={() => { setIsPost(false)}} className='fixed right-10 top-14'>
             <MdClose fill='white' className='si' size={30} />
           </div>
         </div>)

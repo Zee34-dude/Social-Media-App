@@ -48,7 +48,7 @@ export const Popup = ({ userId, followed, setFollowed }: MenubarProps) => {
   return (
     <div ref={menuRef} className={` animate-slide-up center-div fixed ${userPost ? 'top-[20%]' : 'top-[30%]'} z-12 `}>
       <div className="create-post w-[300px]  rounded-[5px] flex flex-col items-center  ">
-        {userPost ? <div onClick={() => deletePost(popUpId)} className="w-full text-center py-4 border-b border-[#d4d4d4c9]  text-[0.85rem] text-red-500 ">{`Delete `}
+        {userId === user?.uid ? <div onClick={() => deletePost(popUpId)} className="w-full text-center py-4 border-b border-[#d4d4d4c9]  text-[0.85rem] text-red-500 ">{`Delete `}
         </div> : <div className="w-full text-center py-4 border-b border-[#d4d4d4c9] text-[0.85rem] text-red-500 ">{`Report `}
         </div>}
 

@@ -1,13 +1,14 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useContext,  useState } from "react"
 import { Link, Outlet } from "react-router-dom"
 import { themeContext } from "../Context/ThemeContext"
 
 
 export const Activity = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const {theme}=useContext(themeContext)
+  const { theme } = useContext(themeContext)
+
 
   return (
     <div className="flex flex-col lg:flex-row  min-h-screen md:ml-[10%] lg:ml-[22%]">
@@ -34,7 +35,7 @@ export const Activity = () => {
         ${isMobileMenuOpen ? "block" : "hidden"} 
         lg:block 
         w-full lg:w-60 xl:w-60 
-        border-r ${theme==='dark'?'border-gray-800':'border-gray-300'} 
+        border-r ${theme === 'dark' ? 'border-gray-800' : 'border-gray-300'} 
         p-4 lg:p-6 
          lg:bg-transparent
        relative

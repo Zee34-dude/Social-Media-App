@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../../App"
 import { Posts } from '../../pages/Home'
 import RadialLoader from "../../GIfComponents/RadialLoader"
+import { useNavigate } from "react-router-dom"
 
 export const UserPost = () => {
     const { user } = useContext(UserContext)
@@ -11,6 +12,7 @@ export const UserPost = () => {
     const postQuery = query(postsRef, where('userId', '==', user?.uid))
     const [postsList, setPostsList] = useState<Posts[]>([])
     const [loader, setLoader] = useState<boolean>(false)
+    const navigate=useNavigate()
     const fetchPosts = async () => {
         setLoader(true)
         const postDoc = await getDocs(postQuery)
@@ -20,12 +22,16 @@ export const UserPost = () => {
     useEffect(() => {
         fetchPosts()
     }, [])
+    function NavigateTopage(PostId: string): void {
+        navigate(`/p/${PostId}`)
+    }
+
     if (loader) {
         return <RadialLoader />
     }
     const Post = postsList.map((post) => {
         return (
-            <div className="relative aspect-square group cursor-pointer">
+            <div onClick={()=>NavigateTopage(post.id)} className="relative aspect-square group cursor-pointer">
                 {
                     post.video ?
                         <video muted autoPlay className="w-full h-full object-cover rounded-sm" src={post.video}>

@@ -1,9 +1,10 @@
 
-import { SlLike } from "react-icons/sl";
+
 import { CiShare1 } from "react-icons/ci";
 import { BookMark } from '../SvgComponents/BookMark';
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Heart } from "lucide-react";
 
 
 
@@ -35,13 +36,13 @@ export const SKeletonPost = () => {
           <div className='flex mt-4'>
             <span className='flex items-center gap-5 pl-2'>
               <div>
-                <SlLike className='w-[1rem] h-[1rem]' />
+                <Heart className='w-6 h-6' />
               </div>
               <div>
-                <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="16" icon-name="comment-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M10 19H1.871a.886.886 0 0 1-.798-.52.886.886 0 0 1 .158-.941L3.1 15.771A9 9 0 1 1 10 19Zm-6.549-1.5H10a7.5 7.5 0 1 0-5.323-2.219l.54.545L3.451 17.5Z"></path> </svg>
+                <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="20" icon-name="comment-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 19H1.871a.886.886 0 0 1-.798-.52.886.886 0 0 1 .158-.941L3.1 15.771A9 9 0 1 1 10 19Zm-6.549-1.5H10a7.5 7.5 0 1 0-5.323-2.219l.54.545L3.451 17.5Z"></path> </svg>
               </div>
               <div>
-                <CiShare1 className='w-[1.2rem] h-[1.2rem]' />
+                <CiShare1 className='w-4 h-4' />
               </div>
             </span>
             <span className='ml-auto'>
