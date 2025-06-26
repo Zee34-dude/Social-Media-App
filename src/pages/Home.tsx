@@ -207,7 +207,7 @@ export const Home = () => {
         pt-[75px]  ">
 
           {
-          true && Array.from({ length: 5 }).fill('').map((o, index) => {
+            loading && Array.from({ length: 5 }).fill('').map((o, index) => {
               console.log(o)
               return <SKeletonPost
                 key={index}
