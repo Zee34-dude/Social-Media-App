@@ -7,6 +7,7 @@ import { Avatar } from './RandomAvatar';
 import { ImageContext } from '../Context/ImageContext';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { stateContext } from '../Context/StateContext';
+import webLogo from '../assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
 
 
 interface MenubarProps {
@@ -16,9 +17,9 @@ interface MenubarProps {
 
 export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
-  const { setIsOpen,isOpen,setIsdragged,isdragged } = useContext(stateContext)
+  const { setIsOpen, isOpen, setIsdragged, isdragged } = useContext(stateContext)
   const { preview } = useContext(ImageContext)
- 
+
 
 
   // Step 2: Toggle dropdown visibility
@@ -41,13 +42,27 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
   return (
     <header className={` border-b border-b-[#b9b5b5ef] ${'fixed'} z-2 top-0 left-0 right-0 h-14 navbar`}>
-        <nav className="w-full h-full flex ">
+      <nav className="w-full h-full flex ">
         <ul className="flex w-full justify-center ">
-          <li onClick={()=> {setIsdragged(!isdragged)}} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
+          <li onClick={() => { setIsdragged(!isdragged) }} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}
-          <li className="pr-6 flex justify-start">
-            <a className='w-full' href=" ">
-
+          <li className="pr-6 flex justify-start relative">
+            <a className='w-full h-full flex ' href=" ">
+              <div className='w-22 h-22 mt-[-20px] '>
+                <img className='w-full h-full' src={webLogo} alt="" />
+              </div>
+              <h1
+                className="text-2xl md:text-2xl font-bold tracking-wider mt-1.5  ml-[-14px]"
+                // style={{
+                //   background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #1e40af 50%, #1d4ed8 75%, #2563eb 100%)",
+                //   WebkitBackgroundClip: "text",
+                //   WebkitTextFillColor: "transparent",
+                //   backgroundClip: "text",
+                //   textShadow: "0 0 30px rgba(37, 99, 235, 0.3)",
+                // }}
+              >
+                Synergy
+              </h1>
             </a>
           </li>
           {/* second-section*/}

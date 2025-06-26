@@ -25,6 +25,7 @@ import { PhotoVideos } from './Activity-Routes/Photo&Videos'
 import ViewPostPage from './pages/ViewPostPage'
 import { StateProvider } from './Context/StateContext'
 import { FirebaseProvider } from './Context/FirebaseContext'
+import webLogo from './assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
 //state type specification
 interface UserContextType {
   user: User | null;
@@ -93,77 +94,77 @@ function App() {
 
 
   if (!authInitialized) {
-    return <RingLoader cssOverride={override} />
+    return <div className='w-50 h-50 relative top-20 left-[42%] translate-y-1/2 animate-pulse'><img className='w-full h-full' src={webLogo} alt="" /></div>
   }
 
   return (
     <div className={`relative`}>
       <ImageProvider>
-        <ThemeProvider>
-          <UserContext.Provider value={{ user, setUser, setAuthInitialized }}>
 
-            <QueryClientProvider client={client}>
-              <FirebaseProvider>
-                <StateProvider>
+        <UserContext.Provider value={{ user, setUser, setAuthInitialized }}>
 
-                  <Router>
-                    {user && <Menubar
-                      setIsPost={setIsPost}
-                      isPost={isPost}
+          <QueryClientProvider client={client}>
+            <FirebaseProvider>
+              <StateProvider>
 
-                    />
+                <Router>
+                  {user && <Menubar
+                    setIsPost={setIsPost}
+                    isPost={isPost}
 
-                    }
-                    {user && <Navbar />}
-                    {isPost && <CreatePost
-                      override={override}
-                      setIsPost={setIsPost}
-                      isPost={isPost}
-                    />}
+                  />
 
-                    <Routes>
-                      <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
-                      <Route path="/login" element={<Login />} />
-                      {<Route path='/register' element={<Register />} />}
-                      <Route path='/user-profile' element={<UserProfile />} />
-                      <Route path='/edit-profile' element={<EditProfile />} />
-                      <Route path='/p/:id' element={<ViewPostPage />} />
-                      <Route path="/activity" element={<Activity
+                  }
+                  {user && <Navbar />}
+                  {isPost && <CreatePost
+                    override={override}
+                    setIsPost={setIsPost}
+                    isPost={isPost}
+                  />}
+
+                  <Routes>
+                    <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+                    <Route path="/login" element={<Login />} />
+                    {<Route path='/register' element={<Register />} />}
+                    <Route path='/user-profile' element={<UserProfile />} />
+                    <Route path='/edit-profile' element={<EditProfile />} />
+                    <Route path='/p/:id' element={<ViewPostPage />} />
+                    <Route path="/activity" element={<Activity
+                    />}>
+                      <Route path='interactions' element={<Interactions
+                        activeTab={activeTab}
+                        handleActiveTab={handleActiveTab}
+                        setActiveTab={setActiveTab}
                       />}>
-                        <Route path='interactions' element={<Interactions
-                          activeTab={activeTab}
-                          handleActiveTab={handleActiveTab}
-                          setActiveTab={setActiveTab}
-                        />}>
-                          <Route path='CommentedPost' element={<CommentedPost />} />
-                          <Route path='LikedPost' element={<LikedPost />} />
-                        </Route>
-                        <Route path='photovideos' element={<PhotoVideos
-                          activeTab={activeTab}
-                          handleActiveTab={handleActiveTab}
-                          setActiveTab={setActiveTab} />}>
-                          <Route path='UserPost' element={<UserPost
-
-                          />} />
-                        </Route>
+                        <Route path='CommentedPost' element={<CommentedPost />} />
+                        <Route path='LikedPost' element={<LikedPost />} />
                       </Route>
+                      <Route path='photovideos' element={<PhotoVideos
+                        activeTab={activeTab}
+                        handleActiveTab={handleActiveTab}
+                        setActiveTab={setActiveTab} />}>
+                        <Route path='UserPost' element={<UserPost
 
-                    </Routes>
-                    <Routes>
+                        />} />
+                      </Route>
+                    </Route>
 
-                      {/* Other routes */}
-                    </Routes>
-                  </Router>
-                </StateProvider>
-              </FirebaseProvider>
-            </QueryClientProvider>
-          </ UserContext.Provider>
-        </ThemeProvider>
+                  </Routes>
+                  <Routes>
+
+                    {/* Other routes */}
+                  </Routes>
+                </Router>
+              </StateProvider>
+            </FirebaseProvider>
+          </QueryClientProvider>
+        </ UserContext.Provider>
+
       </ImageProvider>
 
       {(isPost) &&
         (<div className={`bg-[#0000009a] fixed top-0 w-full h-full z-3`}>
-          <div onClick={() => { setIsPost(false)}} className='fixed right-10 top-14'>
+          <div onClick={() => { setIsPost(false) }} className='fixed right-10 top-14'>
             <MdClose fill='white' className='si' size={30} />
           </div>
         </div>)

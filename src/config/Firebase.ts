@@ -27,5 +27,6 @@ const storage = getStorage(app)
 const commentCollection = collection(db, 'comments')
 const userCollection = collection(db, 'user')
 const followCollection = collection(db, 'follow');
+ const likesCollection = collection(db, 'likes');
 
-export { db, auth, app, Provider, storage, commentCollection, userCollection, followCollection }
+export { db, auth, app, Provider, storage, commentCollection, userCollection, followCollection,likesCollection }

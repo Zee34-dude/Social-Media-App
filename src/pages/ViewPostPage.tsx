@@ -11,8 +11,9 @@ import { commentUtils } from "../utils/commentUtils"
 import { Comments } from "../Components/Comments"
 import { UserContext } from "../App"
 import AutoPlayVideo from "../Components/utilsComponents/AutoPlayVideo"
-
+import { followUtils } from "../utils/followUtils"
 import { FirebaseContext } from "../Context/FirebaseContext"
+import Skeleton from "react-loading-skeleton"
 
 export default function ViewPostPage() {
   const [isLiked, setIsLiked] = useState(false)
@@ -20,16 +21,19 @@ export default function ViewPostPage() {
   const [postData, setPostData] = useState<Posts | null>(null)
   const [commentData, setCommentData] = useState<Comment[]>([])
   const [isFollowing, setIsFollowing] = useState<boolean>(false)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [showComments, setShowComments] = useState(false)
+  const [loadingState, setLoadingState] = useState(false)
   const { user } = useContext(UserContext)
   const { followingCount } = useContext(FirebaseContext)
-  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
-  const { addComment, commentLoading, handleComment, comment } = commentUtils()
+  const { addFollow, removeFollow, loader } = followUtils()
   const { id } = useParams()
-  const [showComments, setShowComments] = useState(false)
+  const { addComment, commentLoading, handleComment, comment } = commentUtils()
+  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     const fetchPost = async () => {
+      setLoadingState(true)
       if (id) {
         const postRef = doc(db, 'posts', id)
         const commentQuery = query(commentCollection, where('postId', '==', id))
@@ -43,15 +47,14 @@ export default function ViewPostPage() {
         const qData = await getDocs(commentQuery)
         setCommentData(qData.docs.map((doc) => ({ ...doc.data(), commentId: doc.id })) as Comment[])
       }
+      setLoadingState(false)
     }
-
     fetchPost()
   }, [id])
 
   useEffect(() => {
     if (followingCount && postData && user) {
       const followingUserId = followingCount.find((post: any) => post.userId === postData?.userId)
-      console.log(followingCount, postData?.userId)
       setIsFollowing(!!followingUserId)
     }
   }, [followingCount, postData, user])
@@ -79,11 +82,19 @@ export default function ViewPostPage() {
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  {loadingState ? <div className="w-20 h-4"><Skeleton className='w-full h-full' /></div> : <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm">{postData?.username}</span>
                     <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                    <span className="text-[#3c42d6]  text-sm">{isFollowing ? 'Following' : 'Follow'}</span>
-                  </div>
+
+                    {postData && (isFollowing ? <div onClick={loader ? undefined : () => removeFollow(postData?.userId)}
+                      className=" text-sm text-[#3c42d6]">{loader ? <div className='spinner border-2  border-[#5b5b5c] border-b-transparent  w-5 h-5'></div>
+                        : 'Following'}</div>
+                      :
+                      <div onClick={loader ? undefined : () => addFollow(postData?.userId)}
+                        className="text-sm text-[#3c42d6]">{loader ? <div className='spinner border-2 border-[#5b5b5c]  border-b-transparent w-5 h-5'></div>
+                          : 'Follow'}</div>)}
+                  </div>}
+
                 </div>
                 <MoreHorizontal className="w-6 h-6 cursor-pointer" />
               </div>
@@ -221,3 +232,5 @@ export default function ViewPostPage() {
     </div>
   )
 }
+
+// text-[#3c42d6]

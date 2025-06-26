@@ -22,7 +22,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
     const { user } = useContext(UserContext)
     const [followsCount, setFollowsCount] = useState<any>([])
     const [followingCount, setFollowingCount] = useState<any>([])
-    const {followed}=followUtils()
+    const {addFollow,removeFollow}=followUtils()
 
 
     useEffect(() => {
@@ -31,15 +31,12 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
             const followingDoc = query(followCollection, where('followerId', '==', user?.uid))
             const followsData = await getDocs(followDoc)
             const followingData = await getDocs(followingDoc)
-            console.log(followingData)
             setFollowsCount(followsData.docs.map((doc) => ({ ...doc.data() })))
             setFollowingCount(followingData.docs.map((doc) => ({ ...doc.data() })))
 
-
-
         }
         fetchFollowers()
-    }, [user?.uid,followed])
+    }, [user?.uid,addFollow,removeFollow])
 
 
 

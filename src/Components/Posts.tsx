@@ -1,11 +1,11 @@
 
 import { CiShare1 } from "react-icons/ci";
 import { BookMark } from '../SvgComponents/BookMark';
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "../App";
 import { Popup } from "./MenuPopup";
-import { commentCollection, db } from "../config/Firebase";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { commentCollection, db, likesCollection } from "../config/Firebase";
+import {  collection, getDocs, query, where } from "firebase/firestore";
 import { HomeContext } from "../pages/Home";
 import { themeContext } from "../Context/ThemeContext.tsx";
 import { Comments } from "./Comments.tsx";
@@ -15,6 +15,7 @@ import { commentUtils } from "../utils/commentUtils.ts";
 import { stateContext } from "../Context/StateContext.tsx";
 import { Heart } from "lucide-react";
 import { followUtils } from "../utils/followUtils.ts";
+import { likesUtils } from "../utils/likesUtils.ts";
 
 
 interface Props {
@@ -39,24 +40,21 @@ export interface Comment {
 }
 
 export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, video }: Props) => {
-  const [likesCount, setLikesCount] = useState<number>(0);
-  const [liked, setLiked] = useState<boolean>(false);
-  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
-  const commentBtnRef = useRef<HTMLDivElement | null>(null)
   const { user } = useContext(UserContext)
   const { popUpId } = useContext(stateContext)
   const { commentPop, setCommentPop } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
   const { handleComment, comment, commentLoading, addComment, commentList, volatileList, setCommentList } = commentUtils()
+  const { setFollowed, followed } = followUtils()
+  const {handleLike,likesCount,liked,setLikesCount,setLiked}=likesUtils()
+  const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const commentBtnRef = useRef<HTMLDivElement | null>(null)
   const postRef = useRef<HTMLSpanElement | null>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
-  const likesRef = collection(db, 'likes');
   const commentsDoc = query(commentCollection, where('postId', '==', id))
-  const likesDoc = query(likesRef, where('postId', '==', id));
-  const newLikedState = !liked;
+  const likesDoc = query(likesCollection, where('postId', '==', id));
   const followRef = collection(db, 'follow');
   const followDoc = query(followRef, where('userId', '==', userId))
-  const { setFollowed,followed } = followUtils()
   const fetchFollowers = async () => {
     const followerData = await getDocs(followDoc)
     const userFollowed = followerData.docs.find(doc => doc.data().followerId == user?.uid)
@@ -71,41 +69,10 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
     );
 
   }
-  const debounce = (cb: Function, delay = 3000) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (...args: any[]) => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => cb(...args), delay);
-    };
-  };
 
-  // Debounced functions
-  const updateLike = debounce(async () => {
-    try {
-      if (newLikedState) {
-        await addDoc(likesRef, { userId: user?.uid, postId: id });
-        console.log('Like added');
-      } else {
-        const deleteQuery = query(likesRef, where('postId', '==', id), where('userId', '==', user?.uid));
-        const deleteData = await getDocs(deleteQuery);
-        if (!deleteData.empty) {
-          const deleteId = doc(db, 'likes', deleteData.docs[0].id);
-          await deleteDoc(deleteId);
-          console.log('Like removed');
-        }
-      }
-    } catch (error) {
-      console.error('Failed to update like status:', error);
-    }
-  }, 1000); // Shorter debounce for faster UI response
 
   // Like handler
-  const handleLike = () => {
-    const newLikedState = !liked;
-    setLiked(newLikedState);
-    setLikesCount(likesCount + (newLikedState ? 1 : -1));
-    updateLike(newLikedState); // Pass the state to debounced function
-  };
+
 
   //gets all the necessary from firebase
   useEffect(() => {
@@ -259,7 +226,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
           <div className='flex mt-4'>
             <span className='flex items-center gap-5 pl-2'>
               <div className="flex items-center gap-1" >
-                <Heart onClick={handleLike} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />
+                <Heart onClick={()=>handleLike(id)} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />
                 <p>{likesCount}</p>
               </div>
               <div onClick={() => isUserPost(id, userId)} ref={commentBtnRef} className="flex items-center gap-1">
