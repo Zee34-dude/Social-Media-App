@@ -52,7 +52,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
                 <img className='w-full h-full' src={webLogo} alt="" />
               </div>
               <h1
-                className="text-2xl md:text-2xl font-bold tracking-wider mt-1.5  ml-[-14px] hidden md:block"
+                className="text-2xl md:text-2xl font-bold tracking-wider mt-2.5  ml-[-14px] hidden md:block"
               // style={{
               //   background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #1e40af 50%, #1d4ed8 75%, #2563eb 100%)",
               //   WebkitBackgroundClip: "text",

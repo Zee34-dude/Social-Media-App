@@ -29,7 +29,7 @@ export default function ViewPostPage() {
   const { addFollow, removeFollow, loader } = followUtils()
   const { id } = useParams()
   const { addComment, commentLoading, handleComment, comment } = commentUtils()
-  const { handleLike,setLikesCount,setLiked,likesCount,liked } = likesUtils()
+  const { handleLike, setLikesCount, setLiked, likesCount, liked } = likesUtils()
   const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const inputRef = useRef<HTMLInputElement | null>(null)
   const likesDoc = query(likesCollection, where('postId', '==', id));
@@ -117,7 +117,7 @@ export default function ViewPostPage() {
                   <div className="mt-4 lg:mt-6 ">
                     {postData?.image ? <img
                       src={postData?.image} alt="Meme reaction"
-                      className="w-full max-w-sm lg:max-w-[599px] mx-auto rounded-lg aspect-[1/1]  object-cover"
+                      className="w-full max-w-sm lg:max-w-[500px] mx-auto rounded-lg aspect-[1/1]  object-cover"
                     /> : <AutoPlayVideo className=" mx-auto  w-full max-w-sm lg:max-w-[599px]  rounded-lg aspect-[1/1] object-cover" src={postData?.video} />}
                   </div>
                 </div>
@@ -128,8 +128,8 @@ export default function ViewPostPage() {
 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-4">
-                    <button  className="hover:opacity-70 transition-opacity flex items-center gap-1">
-                      {id && <Heart onClick={() => handleLike(id)} className={`w-6 h-6 ${liked ? "fill-red-500 text-red-500" : ""}`} />}
+                    <button className="hover:opacity-70 transition-opacity flex items-center gap-1">
+                      {id && <Heart onClick={() => handleLike(id)} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />}
                       <span>{likesCount}</span>
                     </button>
                     <button
@@ -167,7 +167,7 @@ export default function ViewPostPage() {
                     borderColor: '#5b5b5c',
                     borderBottomColor: 'transparent'
                   }} className="spinner border-2 absolute right-[50%] top-4 w-5 h-5"> </div>}
-                  {comment && id && <button onClick={() => addComment(inputRef, id)} className="text-blue-500 text-sm font-semibold">Post</button>}
+                  {comment && id && <button onClick={() => addComment(inputRef, id,setCommentData)} className="text-blue-500 text-sm font-semibold">Post</button>}
                 </div>
 
               </div>
@@ -190,6 +190,8 @@ export default function ViewPostPage() {
                     userId={doc.userId}
                     userComment={userComment}
                     commentsRef={commentsRef}
+                    cb={setCommentData}
+                    
 
 
                   />

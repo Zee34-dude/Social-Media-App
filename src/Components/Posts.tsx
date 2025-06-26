@@ -1,11 +1,11 @@
 
 import { CiShare1 } from "react-icons/ci";
 import { BookMark } from '../SvgComponents/BookMark';
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../App";
 import { Popup } from "./MenuPopup";
 import { commentCollection, db, likesCollection } from "../config/Firebase";
-import {  collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { HomeContext } from "../pages/Home";
 import { themeContext } from "../Context/ThemeContext.tsx";
 import { Comments } from "./Comments.tsx";
@@ -40,13 +40,14 @@ export interface Comment {
 }
 
 export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, video }: Props) => {
+  const [commentList, setCommentList] = useState<Comment[]>([])
   const { user } = useContext(UserContext)
   const { popUpId } = useContext(stateContext)
   const { commentPop, setCommentPop } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
-  const { handleComment, comment, commentLoading, addComment, commentList, volatileList, setCommentList } = commentUtils()
+  const { handleComment, comment, commentLoading, addComment, volatileList, deleteComment } = commentUtils()
   const { setFollowed, followed } = followUtils()
-  const {handleLike,likesCount,liked,setLikesCount,setLiked}=likesUtils()
+  const { handleLike, likesCount, liked, setLikesCount, setLiked } = likesUtils()
   const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const commentBtnRef = useRef<HTMLDivElement | null>(null)
   const postRef = useRef<HTMLSpanElement | null>(null)
@@ -71,9 +72,6 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   }
 
 
-  // Like handler
-
-
   //gets all the necessary from firebase
   useEffect(() => {
     const fetchLikes = async () => {
@@ -83,7 +81,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
       setLiked(!!userLike);
 
     };
-    getComments()
+
     fetchLikes();
     fetchFollowers()
 
@@ -136,6 +134,9 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
     };
   }, [commentPop]);
 
+  useEffect(() => {
+    getComments()
+  }, [deleteComment])
 
 
   const newList: any = commentList.length > 0 ? commentList.map((doc, index) =>
@@ -153,6 +154,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
       commentsRef={commentsRef}
       userId={userId}
       userComment={userComment}
+      cb={setCommentList}
 
 
 
@@ -226,7 +228,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
           <div className='flex mt-4'>
             <span className='flex items-center gap-5 pl-2'>
               <div className="flex items-center gap-1" >
-                <Heart onClick={()=>handleLike(id)} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />
+                <Heart onClick={() => handleLike(id)} className={`w-6 h-6 ${liked ? "fill-[#450ace] text-[#450ace]" : ""}`} />
                 <p>{likesCount}</p>
               </div>
               <div onClick={() => isUserPost(id, userId)} ref={commentBtnRef} className="flex items-center gap-1">
@@ -265,12 +267,12 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
               borderBottomColor: 'transparent'
             }} className='spinner border-2 absolute right-[50%] top-2 w-5 h-5'> </div>
             }
-            {comment && <span onClick={() => addComment(inputRef, id)} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
+            {comment && <span onClick={() => addComment(inputRef, id, setCommentList)} ref={postRef} className="absolute text-sm top-0 text-blue-500 right-4">Post</span>
             }   </div>
         </div>
       </div>
       {(commentPop) &&
-        (<div className={`bg-[#00000042] fixed top-0 left-0 right-0 bottom-0 z-3`}>
+        (<div className={`bg-[#0a0a0a3b] fixed top-0 left-0 right-0 bottom-0 z-3`}>
           <div onClick={() => { setCommentPop(null) }} className='fixed right-10 top-14'>
             <MdClose fill='white' className='si' size={30} />
           </div>
