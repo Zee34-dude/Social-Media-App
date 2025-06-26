@@ -93,10 +93,10 @@ function App() {
   }
 
 
-  if (!authInitialized) {
+  if (true) {
     return (
       <div className=''>
-        <div className='w-50 h-50 animate-pulse relative top-20 center-div'><img className='w-full h-full' src={webLogo} alt="" /></div>
+        <div className='w-50 h-50 animate-pulse relative top-39 center-div'><img className='w-full h-full' src={webLogo} alt="" /></div>
         <Synergy />
       </div>
     )
