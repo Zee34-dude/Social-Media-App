@@ -10,8 +10,7 @@ import { createContext, useState, useEffect, CSSProperties } from 'react'
 import { auth } from './config/Firebase'
 import { CreatePost } from './Components/CreatePost'
 import { MdClose } from "react-icons/md";
-import { RingLoader } from 'react-spinners'
-import { ThemeProvider } from './Context/ThemeContext'
+
 import { UserProfile } from './pages/UserProfile'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { EditProfile } from './pages/Editprofile'
