@@ -93,7 +93,7 @@ function App() {
 
 
   if (!authInitialized) {
-    return <div className='w-50 h-50 relative top-20 left-[42%] translate-y-1/2 animate-pulse'><img className='w-full h-full' src={webLogo} alt="" /></div>
+    return <div className='w-50 h-50 relative top-40 center-div '><img className='w-full h-full' src={webLogo} alt="" /></div>
   }
 
   return (

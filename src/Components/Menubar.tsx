@@ -46,20 +46,20 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
         <ul className="flex w-full justify-center ">
           <li onClick={() => { setIsdragged(!isdragged) }} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}
-          <li className="pr-6 flex justify-start relative">
+          <li className="md:pr-6 flex justify-start relative">
             <a className='w-full h-full flex ' href=" ">
-              <div className='w-22 h-22 mt-[-20px] '>
+              <div className='w-20 h-20 mt-[-15px] max-[768px]:mr-[-15px] '>
                 <img className='w-full h-full' src={webLogo} alt="" />
               </div>
               <h1
-                className="text-2xl md:text-2xl font-bold tracking-wider mt-1.5  ml-[-14px]"
-                // style={{
-                //   background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #1e40af 50%, #1d4ed8 75%, #2563eb 100%)",
-                //   WebkitBackgroundClip: "text",
-                //   WebkitTextFillColor: "transparent",
-                //   backgroundClip: "text",
-                //   textShadow: "0 0 30px rgba(37, 99, 235, 0.3)",
-                // }}
+                className="text-2xl md:text-2xl font-bold tracking-wider mt-1.5  ml-[-14px] hidden md:block"
+              // style={{
+              //   background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #1e40af 50%, #1d4ed8 75%, #2563eb 100%)",
+              //   WebkitBackgroundClip: "text",
+              //   WebkitTextFillColor: "transparent",
+              //   backgroundClip: "text",
+              //   textShadow: "0 0 30px rgba(37, 99, 235, 0.3)",
+              // }}
               >
                 Synergy
               </h1>
@@ -67,8 +67,8 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           </li>
           {/* second-section*/}
           <li className=" flex flex-1 ">
-            <div className='py-2  w-full flex '>
-              <div className='flex w-full bg-[#E5EBEE] mx-auto md:w-[560px] items-center rounded-3xl pl-4 gap-2'>
+            <div className='py-2  w-full flex max-[600px]:hidden '>
+              <div className=' w-full bg-[#E5EBEE] mx-auto max-w-[560px] items-center rounded-3xl pl-4 gap-2 flex '>
                 <span className='text-black'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
                 <span className='w-full'>
                   <input className="w-full outline-0 text-black " placeholder="Search here" type="text" />
@@ -79,13 +79,13 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           {/* last-section*/}
           <li className='pl-lg gap-2 flex items-center justify-end mr-2'>
             <div className='flex items-center'>
-              <span className='px-4'>
+              {/* <span className='px-4'>
                 <button>
                   <svg fill="currentColor" height="20" icon-name="chat-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                     <path d="M11.61 19.872a10.013 10.013 0 0 0 6.51-4.035A9.999 9.999 0 0 0 12.275.264c-1.28-.3-2.606-.345-3.903-.132a10.05 10.05 0 0 0-8.25 8.311 9.877 9.877 0 0 0 1.202 6.491l-1.24 4.078a.727.727 0 0 0 .178.721.72.72 0 0 0 .72.19l4.17-1.193A9.87 9.87 0 0 0 9.998 20c.54 0 1.079-.043 1.612-.128ZM1.558 18.458l1.118-3.69-.145-.24A8.647 8.647 0 0 1 1.36 8.634a8.778 8.778 0 0 1 7.21-7.27 8.765 8.765 0 0 1 8.916 3.995 8.748 8.748 0 0 1-2.849 12.09 8.763 8.763 0 0 1-3.22 1.188 8.68 8.68 0 0 1-5.862-1.118l-.232-.138-3.764 1.076ZM6.006 9a1.001 1.001 0 0 0-.708 1.707A1 1 0 1 0 6.006 9Zm4.002 0a1.001 1.001 0 0 0-.195 1.981 1 1 0 1 0 .195-1.98Zm4.003 0a1.001 1.001 0 1 0 0 2.003 1.001 1.001 0 0 0 0-2.003Z"></path>
                   </svg>
                 </button>
-              </span>
+              </span> */}
               <span className='px-4'>
                 <div onClick={() => { setIsPost(prev => !prev) }} className='flex items-center justify-center'>
                   <button className='mr-2 bg-gradient-to-r from-[#888BF4] to-[#5151C6] p-[6px] rounded-[50%]'>
