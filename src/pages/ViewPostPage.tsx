@@ -4,7 +4,7 @@ import { doc, getDoc, getDocs, query, where } from "firebase/firestore"
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Smile } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
-import { db, commentCollection } from "../config/Firebase"
+import { db, commentCollection, likesCollection } from "../config/Firebase"
 import { Posts } from "./Home"
 import { Comment } from "../Components/Posts"
 import { commentUtils } from "../utils/commentUtils"
@@ -14,9 +14,10 @@ import AutoPlayVideo from "../Components/utilsComponents/AutoPlayVideo"
 import { followUtils } from "../utils/followUtils"
 import { FirebaseContext } from "../Context/FirebaseContext"
 import Skeleton from "react-loading-skeleton"
+import { likesUtils } from "../utils/likesUtils"
 
 export default function ViewPostPage() {
-  const [isLiked, setIsLiked] = useState(false)
+
   const [isSaved, setIsSaved] = useState(false)
   const [postData, setPostData] = useState<Posts | null>(null)
   const [commentData, setCommentData] = useState<Comment[]>([])
@@ -28,8 +29,11 @@ export default function ViewPostPage() {
   const { addFollow, removeFollow, loader } = followUtils()
   const { id } = useParams()
   const { addComment, commentLoading, handleComment, comment } = commentUtils()
+  const { handleLike,setLikesCount,setLiked,likesCount,liked } = likesUtils()
   const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const likesDoc = query(likesCollection, where('postId', '==', id));
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -49,7 +53,15 @@ export default function ViewPostPage() {
       }
       setLoadingState(false)
     }
+    const fetchLikes = async () => {
+      const likesData = await getDocs(likesDoc);
+      const userLike = likesData.docs.find(doc => doc.data().userId === user?.uid);
+      setLikesCount(likesData.docs.length);
+      setLiked(!!userLike);
+
+    };
     fetchPost()
+    fetchLikes()
   }, [id])
 
   useEffect(() => {
@@ -116,8 +128,9 @@ export default function ViewPostPage() {
 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-4">
-                    <button onClick={() => setIsLiked(!isLiked)} className="hover:opacity-70 transition-opacity">
-                      <Heart className={`w-6 h-6 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
+                    <button  className="hover:opacity-70 transition-opacity flex items-center gap-1">
+                      {id && <Heart onClick={() => handleLike(id)} className={`w-6 h-6 ${liked ? "fill-red-500 text-red-500" : ""}`} />}
+                      <span>{likesCount}</span>
                     </button>
                     <button
                       className="hover:opacity-70 transition-opacity lg:hidden"
@@ -232,5 +245,7 @@ export default function ViewPostPage() {
     </div>
   )
 }
+
+
 
 // text-[#3c42d6]

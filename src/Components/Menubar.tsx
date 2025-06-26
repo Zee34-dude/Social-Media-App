@@ -44,11 +44,11 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
     <header className={` border-b border-b-[#b9b5b5ef] ${'fixed'} z-2 top-0 left-0 right-0 h-14 navbar`}>
       <nav className="w-full h-full flex ">
         <ul className="flex w-full justify-center ">
-          <li onClick={() => { setIsdragged(!isdragged) }} className='md:hidden block relative top-5 left-3'><RxHamburgerMenu size={20} /></li>
+          <li onClick={() => { setIsdragged(!isdragged) }} className='md:hidden block relative top-5 left-3 z-2'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}
           <li className="md:pr-6 flex justify-start relative">
             <a className='w-full h-full flex ' href=" ">
-              <div className='w-20 h-20 mt-[-15px] max-[768px]:mr-[-15px] '>
+              <div className='w-20 h-20 mt-[-11px] max-[768px]:mr-[-15px] '>
                 <img className='w-full h-full' src={webLogo} alt="" />
               </div>
               <h1
@@ -68,13 +68,16 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           {/* second-section*/}
           <li className=" flex flex-1 ">
             <div className='py-2  w-full flex max-[600px]:hidden '>
-              <div className=' w-full bg-[#E5EBEE] mx-auto max-w-[560px] items-center rounded-3xl pl-4 gap-2 flex '>
+              <div className=' w-full bg-[#E5EBEE] mx-auto max-w-[560px] items-center rounded-3xl pl-4 gap-2 flex'>
                 <span className='text-black'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
                 <span className='w-full'>
                   <input className="w-full outline-0 text-black " placeholder="Search here" type="text" />
                 </span>
               </div>
             </div>
+
+            <span className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
+
           </li>
           {/* last-section*/}
           <li className='pl-lg gap-2 flex items-center justify-end mr-2'>
