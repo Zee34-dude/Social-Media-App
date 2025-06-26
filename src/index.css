@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 
 :root {
   --border-color: #99a1af;
@@ -15,7 +17,7 @@
 
 }
 
-.border-skin{
+.border-skin {
   border-color: var(--border-color);
 }
 
@@ -65,6 +67,12 @@ body {
   background-color: var(--post-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
+}
+
+.didact-gothic-regular {
+  font-family: "Didact Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 @media only screen and (max-width:600px) {

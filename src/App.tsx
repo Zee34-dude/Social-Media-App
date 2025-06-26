@@ -25,6 +25,7 @@ import ViewPostPage from './pages/ViewPostPage'
 import { StateProvider } from './Context/StateContext'
 import { FirebaseProvider } from './Context/FirebaseContext'
 import webLogo from './assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
+import Synergy from './Components/Synergy-text'
 //state type specification
 interface UserContextType {
   user: User | null;
@@ -93,9 +94,13 @@ function App() {
 
 
   if (!authInitialized) {
-    return <div className='w-50 h-50 relative top-40 center-div animate-pulse '><img className='w-full h-full' src={webLogo} alt="" /></div>
+    return (
+      <div className=''>
+        <div className='w-50 h-50 animate-pulse relative top-20 center-div'><img className='w-full h-full' src={webLogo} alt="" /></div>
+        <Synergy />
+      </div>
+    )
   }
-
   return (
     <div className={`relative`}>
       <ImageProvider>

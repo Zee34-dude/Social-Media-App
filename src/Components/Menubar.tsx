@@ -8,6 +8,7 @@ import { ImageContext } from '../Context/ImageContext';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { stateContext } from '../Context/StateContext';
 import webLogo from '../assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
+import { Link } from 'react-router-dom';
 
 
 interface MenubarProps {
@@ -47,23 +48,16 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           <li onClick={() => { setIsdragged(!isdragged) }} className='md:hidden block relative top-5 left-3 z-2'><RxHamburgerMenu size={20} /></li>
           {/* first-section*/}
           <li className="md:pr-6 flex justify-start relative">
-            <a className='w-full h-full flex ' href=" ">
+            <Link className='w-full h-full flex ' to={'/'}>
               <div className='w-20 h-20 mt-[-11px] max-[768px]:mr-[-15px] '>
                 <img className='w-full h-full' src={webLogo} alt="" />
               </div>
               <h1
                 className="text-2xl md:text-2xl font-bold tracking-wider mt-2.5  ml-[-14px] hidden md:block"
-              // style={{
-              //   background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #1e40af 50%, #1d4ed8 75%, #2563eb 100%)",
-              //   WebkitBackgroundClip: "text",
-              //   WebkitTextFillColor: "transparent",
-              //   backgroundClip: "text",
-              //   textShadow: "0 0 30px rgba(37, 99, 235, 0.3)",
-              // }}
               >
                 Synergy
               </h1>
-            </a>
+            </Link>
           </li>
           {/* second-section*/}
           <li className=" flex flex-1 ">

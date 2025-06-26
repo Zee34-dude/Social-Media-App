@@ -10,8 +10,8 @@ import { Heart } from "lucide-react";
 
 export const SKeletonPost = () => {
   return (
-    <div className="flex mb-4 max-md:justify-center ">
-      {<div className=" flex flex-col border-b border-b-[#b9b5b58c]">
+    <div className="  flex mb-4 max-md:justify-center relative ">
+      {<div className=" flex flex-col border-b border-b-[#b9b5b58c] w-[500px]">
         <div className="flex max-[600px]:px-2">
           <span className=' flex gap-2'>
             <span className="w-[2rem] h-[2rem]">
@@ -27,7 +27,7 @@ export const SKeletonPost = () => {
             <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24"><title>More options</title><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
           </span>
         </div>
-        <div className="  w-[500px] max-[600px]:w-auto h-[500px] mt-4 relative  ">
+        <div className=" h-[500px] max-w-[500px] mt-4  ">
           {<Skeleton width='100%' height='100%' />
           }
         </div>
