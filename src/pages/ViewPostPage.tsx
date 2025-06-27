@@ -167,7 +167,7 @@ export default function ViewPostPage() {
                     borderColor: '#5b5b5c',
                     borderBottomColor: 'transparent'
                   }} className="spinner border-2 absolute right-[50%] top-4 w-5 h-5"> </div>}
-                  {comment && id && <button onClick={() => addComment(inputRef, id,setCommentData)} className="text-blue-500 text-sm font-semibold">Post</button>}
+                  {comment && id && <button onClick={() => addComment(inputRef, id, setCommentData)} className="text-blue-500 text-sm font-semibold">Post</button>}
                 </div>
 
               </div>
@@ -191,7 +191,7 @@ export default function ViewPostPage() {
                     userComment={userComment}
                     commentsRef={commentsRef}
                     cb={setCommentData}
-                    
+
 
 
                   />
@@ -212,34 +212,26 @@ export default function ViewPostPage() {
               </button>
             </div>
             <div className="space-y-4 max-h-96 overflow-y-auto">
-              {commentData?.map((comment) => (
-                <div key={comment.id} className="flex gap-3">
-                  <img
-                    src={comment.img || "/placeholder.svg"}
-                    alt={comment.username}
-                    className="w-8 h-8 rounded-full flex-shrink-0 object-cover"
+              {id && commentData?.map((doc, index) => {
+                const userComment = user?.displayName == doc.username ? true : false
+
+                return (
+                  <Comments
+                    username={doc.username}
+                    commentId={doc.commentId}
+                    comment={doc.comment}
+                    img={doc.img}
+                    key={index}
+                    id={id}
+                    userId={doc.userId}
+                    userComment={userComment}
+                    commentsRef={commentsRef}
+                    cb={setCommentData}
                   />
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="font-semibold text-sm mr-2">{comment.username}</span>
-                        <span className="text-gray-300 text-sm">1w ago</span>
-                      </div>
-                      <Heart className="w-3 h-3 cursor-pointer hover:opacity-70" />
-                    </div>
-                    <p className="text-sm mt-1 text-gray-100">{comment.comment}</p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
-                      <span> 2 likes</span>
-                      <button className="hover:text-gray-300">Reply</button>
-                    </div>
-                    {true && (
-                      <button className="text-xs text-gray-400 mt-2 hover:text-gray-300">
-                        View all replies
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
+
+                )
+              }
+              )}
             </div>
           </div>
         )}
