@@ -24,7 +24,7 @@ import { PhotoVideos } from './Activity-Routes/Photo&Videos'
 import ViewPostPage from './pages/ViewPostPage'
 import { StateProvider } from './Context/StateContext'
 import { FirebaseProvider } from './Context/FirebaseContext'
-import webLogo from './assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
+import webLogo from './assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.svg'
 import Synergy from './Components/Synergy-text'
 //state type specification
 interface UserContextType {

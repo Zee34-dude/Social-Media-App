@@ -7,7 +7,7 @@ import { Avatar } from './RandomAvatar';
 import { ImageContext } from '../Context/ImageContext';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { stateContext } from '../Context/StateContext';
-import webLogo from '../assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.png'
+import webLogo from '../assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.svg'
 import { Link } from 'react-router-dom';
 
 
