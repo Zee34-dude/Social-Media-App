@@ -33,7 +33,7 @@ export const Interactions = ({ activeTab, setActiveTab, handleActiveTab }: Prop)
                         interactionData.map((data, id) => (
                             <Link key={id} to={data.to} >
                                 <button onClick={() => handleActiveTab(data.tab)} className={` max-[400px]:px-2 px-4 py-4 flex gap-2 items-center text-sm font-medium 
-                        ${activeTab == data.tab && `border-white border-b-2`} `}>
+                        ${activeTab == data.tab && ` border-b-2`} `}>
                                     {data.svg}
                                     {data.interaction}
                                 </button>

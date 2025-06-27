@@ -46,7 +46,7 @@ export const Comments = ({ username, commentId, comment, img, userComment, cb }:
                 </div>
             </div>
             {showOptions &&
-                <div ref={cancelRef} className=" fixed left-[44%] top-[40%] z-15 animate-pop" >
+                <div ref={cancelRef} className=" fixed center-div top-[40%] z-15 animate-pop" >
                     <div className="flex flex-col create-post rounded-[5px]">
                         {userComment ?
                             <div onClick={() =>

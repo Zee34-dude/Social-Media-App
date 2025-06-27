@@ -14,7 +14,7 @@ export const themeContext = createContext<Context>({
   setShowMode:()=>{}
 })
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState(localStorage.getItem('theme')||'light')
+  const [theme, setTheme] = useState(localStorage.getItem('theme')||'dark')
   const [showMode, setShowMode] = useState<Boolean>(false)
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -23,7 +23,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     [theme])
   const toggleTheme = () => {
     setTheme(prevtheme => prevtheme === 'light' ? 'dark' : 'light')
-    console.log('yes')
+    
   }
   return (
     <themeContext.Provider value={{theme, toggleTheme,showMode,setShowMode} }>
