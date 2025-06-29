@@ -14,10 +14,11 @@
   animation-iteration-count: infinite;
 
 }
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
@@ -27,14 +28,17 @@
     opacity: 1;
   }
 }
+
 @keyframes fade {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.1;
   }
 }
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -81,14 +85,12 @@
   }
 
 }
+
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
 
 .animate-pop {
-  animation: popup 0.3s ease-in-out ;
+  animation: popup 0.3s ease-in-out;
 }
-/* .animate-rotate{
-animation: logo-spin 1s ease-in-out;
-animation-iteration-count: infinite;
-} */
+

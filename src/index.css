@@ -6,6 +6,8 @@
   --bg-color: #fcfcfc;
   --text-color: #000000;
   --post-color: #f8f7f7f8;
+  --skeleton-light-1: #eee;
+  --skeleton-light-2: #ddd;
 }
 
 [data-theme="dark"] {
@@ -13,7 +15,8 @@
   --text-color: #f8f7f7f8;
   --post-color: #212022;
   --border-color: oklch(0.278 0.033 256.848);
-
+  --skeleton-light-1: #333;
+  --skeleton-light-2: #444;
 }
 
 .border-skin {
@@ -32,7 +35,13 @@ body {
   margin: 0;
   overflow-x: hidden;
   border-color: var(--border-color);
-  box-sizing:content-box;
+  box-sizing: content-box;
+}
+
+section {
+  background-color: var(--bg-color);
+
+
 }
 
 .disable-scroll {
@@ -79,5 +88,25 @@ body {
   .container {
     display: grid;
     grid-template-columns: 1fr;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      var(--skeleton-light-1) 25%,
+      var(--skeleton-light-2) 50%,
+      var(--skeleton-light-1) 75%
+      );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
   }
 }

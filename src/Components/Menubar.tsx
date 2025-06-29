@@ -21,7 +21,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
   const { setIsOpen, isOpen, setIsdragged, isdragged } = useContext(stateContext)
   const { preview } = useContext(ImageContext)
-  const [desktopSearchBar, setDesktopSearchBar] = useState<boolean>(true)
+  const [windowWidth,setWindowWidth] = useState<number>(window.innerWidth)
   const [showSearchBar,setShowSearchBar]=useState<boolean>(false)
 
 
@@ -43,15 +43,12 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
   }, [])
   useEffect(()=>{
     window.addEventListener('resize',()=>{
-      console.log(window.innerWidth)
-      if (window.innerWidth>600){
-        setDesktopSearchBar(true)
-      }
-      else{
-        setDesktopSearchBar(false)
-      }
+      
+      setWindowWidth(window.innerWidth)
+    
     })
-  },[desktopSearchBar])
+   console.log(windowWidth)
+  },[windowWidth])
 
 
   return (
@@ -62,9 +59,9 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           {/* first-section*/}
           <li className="md:pr-6 flex justify-start relative">
             <Link className='w-full h-full flex ' to={'/'}>
-              <div className='w-20 h-20 mt-[-11px] max-[768px]:mr-[-15px] '>
+              <span className='w-20 h-20 mt-[-11px] max-[768px]:mr-[-15px] '>
                 <img className='w-full h-full' src={webLogo} alt="" />
-              </div>
+              </span>
               <h1
                 className="text-2xl md:text-2xl font-bold tracking-wider mt-2.5  ml-[-14px] hidden md:block"
               >
@@ -74,7 +71,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           </li>
           {/* second-section*/}
           <li className=" flex flex-1  ">
-            {desktopSearchBar&& <SearchSection desktopSearchBar={desktopSearchBar} />}
+            {windowWidth>600&& <SearchSection windowWidth={windowWidth} />}
             <span onClick={() => setShowSearchBar(!showSearchBar)} className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
 
           </li>
@@ -119,7 +116,7 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
         </ul>
       </nav>
-      { showSearchBar&&!desktopSearchBar&&<SearchSection desktopSearchBar={desktopSearchBar} />
+      { showSearchBar&&windowWidth<600 &&<SearchSection windowWidth={windowWidth} />
       }
       {<ProfileMenu
         dropDownRef={dropDownRef}
