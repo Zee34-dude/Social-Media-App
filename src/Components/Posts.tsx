@@ -199,7 +199,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
             <span className="w-[2rem] h-[2rem]">
               <img className="w-full h-full rounded-[50%] object-cover" src={profilePic} alt="" />
             </span>
-            <span className="text-[14px]">{username} {userId} </span>
+            <span className="text-[14px]">{username} </span>
           </span>
           <span onClick={() => { isUserPost(id, undefined) }} className="ml-auto relative">
             <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
