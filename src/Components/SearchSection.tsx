@@ -1,8 +1,8 @@
 import debounce from 'lodash/debounce'
-import { useContext, useEffect, useRef, useState } from 'react'
+import {useEffect, useRef, useState } from 'react'
 import { userCollection } from '../config/Firebase'
 import { query, getDocs, limit } from 'firebase/firestore'
-import { themeContext } from '../Context/ThemeContext'
+
 interface Result {
     id: string
     userName: string,
@@ -16,7 +16,6 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
     const [results, setResults] = useState<Result[]>([]);
     const [loading, setLoading] = useState(false)
     const searchRef = useRef<HTMLDivElement | null>(null)
-    const {theme}=useContext(themeContext)
 
 
     const searchUsers = async (searchText: string) => {
