@@ -3,7 +3,7 @@ import { UserContext } from "../App"
 import { Avatar } from "../Components/RandomAvatar"
 import Skeleton from "react-loading-skeleton"
 import { doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore"
-import { db, userCollection } from "../config/Firebase"
+import { db} from "../config/Firebase"
 import { ImageContext } from "../Context/ImageContext"
 import { BeatLoader, FadeLoader } from "react-spinners"
 import { auth } from '../config/Firebase'
