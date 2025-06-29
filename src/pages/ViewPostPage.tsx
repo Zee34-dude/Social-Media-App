@@ -98,7 +98,7 @@ export default function ViewPostPage() {
                     <span className="font-semibold text-sm">{postData?.username}</span>
                     <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
 
-                    {postData && (isFollowing ? <div onClick={loader ? undefined : () => removeFollow(postData?.userId)}
+                    {postData && !(user?.uid === postData?.userId) && (isFollowing ? <div onClick={loader ? undefined : () => removeFollow(postData?.userId)}
                       className=" text-sm text-[#3c42d6]">{loader ? <div className='spinner border-2  border-[#5b5b5c] border-b-transparent  w-5 h-5'></div>
                         : 'Following'}</div>
                       :

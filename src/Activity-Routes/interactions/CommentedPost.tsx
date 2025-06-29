@@ -58,14 +58,13 @@ export const CommentedPost = () => {
         fetchCommentedPosts();
 
     }, [user?.uid]);
-    console.log(commentedData)
     if (loader) {
         return <RadialLoader />
     }
 
     return (
         <div className="lg:px-10 pt-6 flex flex-col gap-6 overflow-auto pb-20">
-            {commentedData.map(({ comment, post }) => (
+            {!(commentedData.length == 0) ? commentedData.map(({ comment, post }) => (
                 <div
                     key={comment.id}
                     className="border border-gray-700 rounded-lg p-4 relative"
@@ -107,7 +106,11 @@ export const CommentedPost = () => {
                         </div>
                     </div>
                 </div>
-            ))}
+            )) :
+                <div className=" text-3xl text-gray-400 w-full font-bold text-center">
+                    You haven't commented on any post. Comment on posts to see them here
+                </div>
+            }
         </div>
     );
 };

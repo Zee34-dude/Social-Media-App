@@ -14,12 +14,11 @@ export const Interactions = ({ activeTab, setActiveTab, handleActiveTab }: Prop)
     const pathname = window.location.pathname;
     const pathSegment = pathname.split('/')
     const lastPathName = pathSegment[pathSegment.length - 1]
-    console.log(lastPathName)
+    
     useEffect(() => {
         if (lastPathName) {
 
             setActiveTab(lastPathName)
-            console.log('he')
         }
 
     }, [lastPathName])

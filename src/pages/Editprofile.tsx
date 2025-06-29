@@ -3,7 +3,7 @@ import { UserContext } from "../App"
 import { Avatar } from "../Components/RandomAvatar"
 import Skeleton from "react-loading-skeleton"
 import { doc, updateDoc, query, where, getDocs, collection } from "firebase/firestore"
-import { db } from "../config/Firebase"
+import { db, userCollection } from "../config/Firebase"
 import { ImageContext } from "../Context/ImageContext"
 import { BeatLoader, FadeLoader } from "react-spinners"
 import { auth } from '../config/Firebase'
@@ -17,7 +17,7 @@ export const EditProfile = () => {
   const [image, setImage] = useState<File | null>(null)
   const [isTextLoading, setIsTextLoading] = useState<boolean>(false)
   const [shouldUpdate, setShouldUpdate] = useState(false);
- 
+
 
   const cloud_name = 'zion123'
   const preset = 'zion-uploads'
@@ -140,9 +140,15 @@ export const EditProfile = () => {
         const userDoc = queryArray.docs[0].id;//get id from queryArray  
         const UpdateUser = doc(db, 'user', userDoc);
         await updateDoc(UpdateUser, {
-          Bio: form?.bio
+          userName: form?.displayName,
+          userNameLower: form?.displayName?.toLocaleLowerCase()
 
         });
+        if (form?.bio) {
+          await updateDoc(UpdateUser, {
+            Bio: form?.bio,
+          })
+        }
 
       } else {
         return

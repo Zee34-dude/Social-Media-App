@@ -12,7 +12,7 @@ export const UserPost = () => {
     const postQuery = query(postsRef, where('userId', '==', user?.uid))
     const [postsList, setPostsList] = useState<Posts[]>([])
     const [loader, setLoader] = useState<boolean>(false)
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const fetchPosts = async () => {
         setLoader(true)
         const postDoc = await getDocs(postQuery)
@@ -29,9 +29,9 @@ export const UserPost = () => {
     if (loader) {
         return <RadialLoader />
     }
-    const Post = postsList.map((post) => {
+    const Post = postsList.map((post, i) => {
         return (
-            <div onClick={()=>NavigateTopage(post.id)} className="relative aspect-square group cursor-pointer">
+            <div key={i} onClick={() => NavigateTopage(post.id)} className="relative aspect-square group cursor-pointer">
                 {
                     post.video ?
                         <video muted autoPlay className="w-full h-full object-cover rounded-sm" src={post.video}>
@@ -59,9 +59,15 @@ export const UserPost = () => {
     })
     return (
         <div className="flex-1 p-6 overflow-auto">
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-1">
-                {Post}
-            </div>
+            {
+                !(Post.length==0) ?
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-1">
+                        {Post}
+                    </div> :
+                    <div className="text-center text-gray-500 text-3xl font-bold">
+                        You haven't made any Post.
+                    </div>
+            }
         </div>
     )
 }

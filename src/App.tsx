@@ -10,7 +10,6 @@ import { createContext, useState, useEffect, CSSProperties } from 'react'
 import { auth } from './config/Firebase'
 import { CreatePost } from './Components/CreatePost'
 import { MdClose } from "react-icons/md";
-
 import { UserProfile } from './pages/UserProfile'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { EditProfile } from './pages/Editprofile'
@@ -26,6 +25,7 @@ import { StateProvider } from './Context/StateContext'
 import { FirebaseProvider } from './Context/FirebaseContext'
 import webLogo from './assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.svg'
 import Synergy from './Components/Synergy-text'
+import { Reviews } from './Activity-Routes/interactions/Reviews'
 //state type specification
 interface UserContextType {
   user: User | null;
@@ -142,6 +142,7 @@ function App() {
                       />}>
                         <Route path='CommentedPost' element={<CommentedPost />} />
                         <Route path='LikedPost' element={<LikedPost />} />
+                        <Route path='reviews' element={<Reviews/>}></Route>
                       </Route>
                       <Route path='photovideos' element={<PhotoVideos
                         activeTab={activeTab}

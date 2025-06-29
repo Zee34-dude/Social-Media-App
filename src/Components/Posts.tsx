@@ -46,7 +46,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   const { commentPop, setCommentPop } = useContext(HomeContext)
   const { theme } = useContext(themeContext)
   const { handleComment, comment, commentLoading, addComment, volatileList, deleteComment } = commentUtils()
-  const { setFollowed, followed } = followUtils()
+  const { setFollowed} = followUtils()
   const { handleLike, likesCount, liked, setLikesCount, setLiked } = likesUtils()
   const commentsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const commentBtnRef = useRef<HTMLDivElement | null>(null)
@@ -60,7 +60,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
     const followerData = await getDocs(followDoc)
     const userFollowed = followerData.docs.find(doc => doc.data().followerId == user?.uid)
     setFollowed(!!userFollowed)
-    console.log('money no')
+   
   }
   const getComments = async () => {
     const commentData = await getDocs(commentsDoc)
@@ -110,18 +110,13 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
   }, [])
 
   useEffect(() => {
-    console.log(popUpId)
-  }, [popUpId])
-
-
-  useEffect(() => {
     function handleClick(event: MouseEvent) {
       if (commentsRef.current['second'] && commentsRef.current['first'] &&
         commentBtnRef.current && !commentsRef.current['first']?.contains(event.target as Node) &&
         !commentsRef.current['second']?.contains(event.target as Node) &&
         !commentBtnRef.current?.contains(event.target as Node)) {
         setCommentPop(null)
-        console.log(commentBtnRef.current)
+  
       }
     }
 
@@ -182,7 +177,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
         <Popup
           id={id}
           userId={userId}
-          followed={followed}
+          
 
         />}
       {/* comment section */}
@@ -204,7 +199,7 @@ export const Post = ({ username, img, text, profilePic, id, isUserPost, userId, 
             <span className="w-[2rem] h-[2rem]">
               <img className="w-full h-full rounded-[50%] object-cover" src={profilePic} alt="" />
             </span>
-            <span className="text-[14px]">{username} {userId}</span>
+            <span className="text-[14px]">{username} {userId} </span>
           </span>
           <span onClick={() => { isUserPost(id, undefined) }} className="ml-auto relative">
             <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">

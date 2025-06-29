@@ -47,7 +47,9 @@ export const RegisterForm = () => {
       });
       await addDoc(collection(db, 'user'), {
         userId: userCredentials.user?.uid,
-        RandomId: `https://avatar.iran.liara.run/public/${randomId}`
+        RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
+        userName:data.name,
+        userNameLower:data.name.toLocaleLowerCase()
       })
       setAuthInitialized(false)
 

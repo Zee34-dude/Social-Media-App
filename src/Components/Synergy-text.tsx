@@ -5,7 +5,7 @@ export default function Synergy() {
         className="text-4xl font-thin tracking-tight bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent animate-pulse uppercase"
         style={{ fontFamily: "Inter, system-ui, -apple-system, sans-serif", letterSpacing: "-0.02em" }}
       >
-        syngergy
+        synergy
       </div>
     </div>
   )

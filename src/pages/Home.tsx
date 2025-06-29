@@ -118,8 +118,6 @@ export const Home = () => {
       );
     }
     catch (err) {
-
-      console.log(err)
     }
     finally {
 
@@ -136,9 +134,7 @@ export const Home = () => {
       setPostsList((prevPosts) => prevPosts ? prevPosts.filter((post) => post.id !== id) : null);
 
     }
-    catch (err) {
-      console.log(err)
-    }
+    catch (err) { }
     finally {
       setPopupId(null)
     }
@@ -165,21 +161,19 @@ export const Home = () => {
   }, [user?.displayName])
 
 
-  // console.log(user?.uid)
+ 
   function isUserPost(id: string, userId: string) {
     postsList?.map((post) => {
 
       if (id === post.id && userId == undefined) {
         setPopupId(id)
         setPopup(id)
-        console.log(id)
       }
       if (id === post.id && userId == post.userId) {
         setCommentPop({
           userId: userId,
           id: id
         })
-        console.log('yeah')
       }
 
     })
@@ -207,8 +201,7 @@ export const Home = () => {
         pt-[75px]  ">
 
           {
-            loading && Array.from({ length: 5 }).fill('').map((o, index) => {
-              console.log(o)
+            loading && Array.from({ length: 5 }).fill('').map((_, index) => {
               return <SKeletonPost
                 key={index}
               />

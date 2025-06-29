@@ -1,15 +1,16 @@
 import { useContext } from "react"
 import { UserContext } from "../App"
+import { UserPost } from "../Activity-Routes/Photo&Videos/UserPost"
+import { CommentedPost } from "../Activity-Routes/interactions/CommentedPost"
 
 
-export const UserPosts = () => {
-  const {user}=useContext(UserContext)
+export const UserPosts = ({ currentTab }: { currentTab: string }) => {
+  const { user } = useContext(UserContext)
   return (
-    <div className="w-[88%] h-full">
-    <div className="flex justify-center items-center h-full pt-10 text-[#8c8f92] text-2xl font-bold">
-    {user?.displayName} has not made any post
+    <div className="mt-10">{currentTab === 'posts' ? <UserPost /> : currentTab === 'comments' ? <CommentedPost /> : ''
+    }
     </div>
-    </div>
-
+    
   )
+
 }

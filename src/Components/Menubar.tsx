@@ -2,13 +2,14 @@
 import avatar from '../assets/60111.jpg'
 import { ProfileMenu } from './ProfileMenu'
 
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import { Avatar } from './RandomAvatar';
 import { ImageContext } from '../Context/ImageContext';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { stateContext } from '../Context/StateContext';
 import webLogo from '../assets/ChatGPT Image Jun 24, 2025, 12_55_07 PM.svg'
 import { Link } from 'react-router-dom';
+import { SearchSection } from './SearchSection';
 
 
 interface MenubarProps {
@@ -20,7 +21,8 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
   const { setIsOpen, isOpen, setIsdragged, isdragged } = useContext(stateContext)
   const { preview } = useContext(ImageContext)
-
+  const [desktopSearchBar, setDesktopSearchBar] = useState<boolean>(true)
+  const [showSearchBar,setShowSearchBar]=useState<boolean>(false)
 
 
   // Step 2: Toggle dropdown visibility
@@ -39,6 +41,17 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+  useEffect(()=>{
+    window.addEventListener('resize',()=>{
+      console.log(window.innerWidth)
+      if (window.innerWidth>600){
+        setDesktopSearchBar(true)
+      }
+      else{
+        setDesktopSearchBar(false)
+      }
+    })
+  },[desktopSearchBar])
 
 
   return (
@@ -60,17 +73,9 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
             </Link>
           </li>
           {/* second-section*/}
-          <li className=" flex flex-1 ">
-            <div className='py-2  w-full flex max-[600px]:hidden '>
-              <div className=' w-full bg-[#E5EBEE] mx-auto max-w-[560px] items-center rounded-3xl pl-4 gap-2 flex'>
-                <span className='text-black'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
-                <span className='w-full'>
-                  <input className="w-full outline-0 text-black " placeholder="Search here" type="text" />
-                </span>
-              </div>
-            </div>
-
-            <span className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
+          <li className=" flex flex-1  ">
+            {desktopSearchBar&& <SearchSection desktopSearchBar={desktopSearchBar} />}
+            <span onClick={() => setShowSearchBar(!showSearchBar)} className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
 
           </li>
           {/* last-section*/}
@@ -114,6 +119,8 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
         </ul>
       </nav>
+      { showSearchBar&&!desktopSearchBar&&<SearchSection desktopSearchBar={desktopSearchBar} />
+      }
       {<ProfileMenu
         dropDownRef={dropDownRef}
         avatar={avatar}
