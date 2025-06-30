@@ -133,10 +133,10 @@ export default function ViewPostPage() {
                       <span>{likesCount}</span>
                     </button>
                     <button
-                      className="hover:opacity-70 transition-opacity lg:hidden"
+                      className="hover:opacity-70 transition-opacity flex gap-2 lg:hidden"
                       onClick={() => setShowComments(!showComments)}
                     >
-                      <MessageCircle className="w-6 h-6" />
+                      <MessageCircle className="w-6 h-6" /> {commentData.length}
                     </button>
                     <button className="hover:opacity-70 transition-opacity hidden lg:block">
                       <MessageCircle className="w-6 h-6" />
@@ -167,7 +167,7 @@ export default function ViewPostPage() {
                     borderColor: '#5b5b5c',
                     borderBottomColor: 'transparent'
                   }} className="spinner border-2 absolute right-[50%] top-4 w-5 h-5"> </div>}
-                  {comment && id && <button onClick={() => addComment(inputRef, id, setCommentData)} className="text-blue-500 text-sm font-semibold">Post</button>}
+                  {comment && id && <button onClick={() => {addComment(inputRef, id, setCommentData) ,setShowComments(true)}} className="text-blue-500 text-sm font-semibold">Post</button>}
                 </div>
 
               </div>
