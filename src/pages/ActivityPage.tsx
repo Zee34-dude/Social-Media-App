@@ -13,14 +13,14 @@ export const Activity = () => {
   return (
     <div className="flex flex-col lg:flex-row  min-h-screen md:ml-[10%] lg:ml-[22%]">
       {/* Mobile Header */}
-      <div className="lg:hidden absolute top-15 right-3 z-50 ">
+      <div className={`lg:hidden absolute top-15 right-3 ${isMobileMenuOpen&&'z-4'} `}>
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isMobileMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path  strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             ) : (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             )}
@@ -53,7 +53,7 @@ export const Activity = () => {
         <h2 className="text-xl font-semibold mb-6 hidden lg:block">Your activity</h2>
 
         <div className="space-y-2 lg:space-y-4">
-          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg hover:bg-gray-900 cursor-pointer transition-colors">
+          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg  cursor-pointer transition-colors">
             <svg
               className="w-5 h-5 lg:w-6 lg:h-6 mt-1 flex-shrink-0"
               fill="none"
@@ -78,7 +78,7 @@ export const Activity = () => {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg hover:bg-gray-900 cursor-pointer transition-colors">
+          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg  cursor-pointer transition-colors">
             <svg
               className="w-5 h-5 lg:w-6 lg:h-6 mt-1 flex-shrink-0"
               fill="none"
@@ -99,7 +99,7 @@ export const Activity = () => {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg hover:bg-gray-900 cursor-pointer transition-colors">
+          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg  cursor-pointer transition-colors">
             <svg
               className="w-5 h-5 lg:w-6 lg:h-6 mt-1 flex-shrink-0"
               fill="none"
@@ -119,7 +119,7 @@ export const Activity = () => {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg hover:bg-gray-900 cursor-pointer transition-colors">
+          <div className="flex items-start gap-3 lg:gap-4 p-3 rounded-lg  cursor-pointer transition-colors">
             <svg
               className="w-5 h-5 lg:w-6 lg:h-6 mt-1 flex-shrink-0"
               fill="none"
@@ -142,8 +142,8 @@ export const Activity = () => {
 
       {/* Overlay for mobile menu */}
       {isMobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+        <section
+          className={`lg:hidden fixed inset-0  bg-opacity-50 z-3`}
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

@@ -21,8 +21,9 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
   const { setIsOpen, isOpen, setIsdragged, isdragged } = useContext(stateContext)
   const { preview } = useContext(ImageContext)
-  const [windowWidth,setWindowWidth] = useState<number>(window.innerWidth)
-  const [showSearchBar,setShowSearchBar]=useState<boolean>(false)
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
+  const { searchBarRef } = useContext(stateContext)
 
 
   // Step 2: Toggle dropdown visibility
@@ -30,10 +31,14 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
   const dropDownRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(e: MouseEvent) {
 
-      if (dropDownRef.current['first'] && dropDownRef.current['second'] && !dropDownRef.current['first']?.contains(event.target as Node) && !dropDownRef.current['second']?.contains(event.target as Node)) {
+
+      if (dropDownRef.current['first'] && dropDownRef.current['second'] && !dropDownRef.current['first']?.contains(e.target as Node) && !dropDownRef.current['second']?.contains(e.target as Node)) {
         setIsOpen(false)
+      }
+      if (searchBarRef.current['first'] && !searchBarRef.current['first'].contains(e.target as Node) && searchBarRef.current['second'] && !searchBarRef.current['second'].contains(e.target as Node)) {
+        setShowSearchBar(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -41,14 +46,14 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  useEffect(()=>{
-    window.addEventListener('resize',()=>{
-      
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+
       setWindowWidth(window.innerWidth)
-    
+
     })
-   console.log(windowWidth)
-  },[windowWidth])
+    
+  }, [windowWidth])
 
 
   return (
@@ -71,8 +76,12 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
           </li>
           {/* second-section*/}
           <li className=" flex flex-1  ">
-            {windowWidth>600&& <SearchSection windowWidth={windowWidth} />}
-            <span onClick={() => setShowSearchBar(!showSearchBar)} className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
+            {windowWidth > 600 &&
+              <SearchSection
+                windowWidth={windowWidth}
+                searchBarRef={searchBarRef}
+              />}
+            <div ref={el =>searchBarRef.current['first'] = el} onClick={() => setShowSearchBar(!showSearchBar)} className=' ml-auto items-center max-[600px]:flex hidden'><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></div>
 
           </li>
           {/* last-section*/}
@@ -116,7 +125,11 @@ export const Menubar: React.FC<MenubarProps> = ({ setIsPost }) => {
 
         </ul>
       </nav>
-      { showSearchBar&&windowWidth<600 &&<SearchSection windowWidth={windowWidth} />
+      {showSearchBar && windowWidth < 600 &&
+        <SearchSection
+          windowWidth={windowWidth}
+          searchBarRef={searchBarRef}
+        />
       }
       {<ProfileMenu
         dropDownRef={dropDownRef}

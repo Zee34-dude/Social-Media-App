@@ -6,22 +6,23 @@ import { Posts } from '../../pages/Home'
 import RadialLoader from "../../GIfComponents/RadialLoader"
 import { useNavigate } from "react-router-dom"
 
-export const UserPost = () => {
+export const UserPost = ({ userId }: { userId: string }) => {
     const { user } = useContext(UserContext)
     const postsRef = collection(db, 'posts')
-    const postQuery = query(postsRef, where('userId', '==', user?.uid))
+    const postQuery = query(postsRef, where('userId', '==', userId || user?.uid))
     const [postsList, setPostsList] = useState<Posts[]>([])
     const [loader, setLoader] = useState<boolean>(false)
     const navigate = useNavigate()
-    const fetchPosts = async () => {
-        setLoader(true)
-        const postDoc = await getDocs(postQuery)
-        setPostsList(postDoc.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Posts[])
-        setLoader(false)
-    }
     useEffect(() => {
+        const fetchPosts = async () => {
+            setLoader(true)
+            const postDoc = await getDocs(postQuery)
+            console.log(postDoc)
+            setPostsList(postDoc.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Posts[])
+            setLoader(false)
+        }
         fetchPosts()
-    }, [])
+    }, [userId])
     function NavigateTopage(PostId: string): void {
         navigate(`/p/${PostId}`)
     }
@@ -29,6 +30,7 @@ export const UserPost = () => {
     if (loader) {
         return <RadialLoader />
     }
+    console.log(postsList)
     const Post = postsList.map((post, i) => {
         return (
             <div key={i} onClick={() => NavigateTopage(post.id)} className="relative aspect-square group cursor-pointer">
@@ -60,7 +62,7 @@ export const UserPost = () => {
     return (
         <div className="flex-1 p-6 overflow-auto">
             {
-                !(Post.length==0) ?
+                !(Post.length == 0) ?
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-1">
                         {Post}
                     </div> :

@@ -17,7 +17,7 @@ export function commentUtils() {
 
     function handleComment(e: any) {
         setComment(e.currentTarget.value)
-        console.log(e.currentTarget.value)
+       
 
     }
     async function addComment(inputRef: any, id: string, cb: Function) {
@@ -41,7 +41,7 @@ export function commentUtils() {
 
         }
         catch (err) {
-            console.log(err)
+           
         }
         finally {
             setVolatileList((prev) => [...prev, { comment: comment, username: user?.displayName, img: img, }] as Comment[])
@@ -65,7 +65,7 @@ export function commentUtils() {
         finally {
 
         }
-        console.log('money')
+       
     }
 
     return { handleComment, comment, setComment, commentLoading, addComment, volatileList, deleteComment }

@@ -26,7 +26,7 @@ export const ProfileMenu = ({ isOpen, dropDownRef }: any) => {
 
     }
     catch (err) {
-      console.log(err)
+    
     }
   }
 
@@ -35,7 +35,7 @@ export const ProfileMenu = ({ isOpen, dropDownRef }: any) => {
       <ul className='flex flex-col w-full items-start gap-6 py-3'>
 
         <li className='w-full flex hover:bg-[#b9b9b933] px-3 '>
-          <Link className="flex gap-2 items-center" to={'user-profile'}>
+          <Link className="flex gap-2 items-center" to={`user-profile/${user?.uid}`}>
             <span className='w-[2rem] h-[2rem]'>
               <Avatar preview={preview} />
             </span>

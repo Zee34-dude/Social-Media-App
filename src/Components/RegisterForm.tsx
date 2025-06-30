@@ -56,7 +56,7 @@ export const RegisterForm = () => {
       navigate('/')
 
     } catch (err: any) {
-      console.log(err.message);
+  
       setError(true)
     }
     finally {

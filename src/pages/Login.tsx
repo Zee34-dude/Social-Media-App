@@ -28,9 +28,9 @@ export const Login = () => {
         userId: uid,
         RandomId: `https://avatar.iran.liara.run/public/${randomId}`,
       });
-      console.log("New user document created");
+
     } else {
-      console.log("Existing user found");
+
     }
 
     navigate("/");
@@ -40,11 +40,7 @@ export const Login = () => {
   const handleSignIn = async () => {
     try {
       setLoadingState(true);
-      // if (isMobile) {
-      //   console.log("Using redirect sign-in for mobile");
-      //   await signInWithRedirect(auth, Provider);
-      // } else {
-      //   console.log("Using popup sign-in for desktop");
+      
       const result = await signInWithPopup(auth, Provider);
       if (result?.user) {
         await processUser(result.user.uid);

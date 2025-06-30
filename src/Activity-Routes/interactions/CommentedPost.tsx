@@ -47,7 +47,7 @@ export const CommentedPost = () => {
                 setCommentedData(combinedData);
             }
             catch (err) {
-                console.log(err)
+              
             }
             finally {
                 setLoader(false)

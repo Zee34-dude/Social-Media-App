@@ -1,7 +1,9 @@
 import debounce from 'lodash/debounce'
-import {useEffect, useRef, useState } from 'react'
+import {useContext, useEffect, useRef, useState } from 'react'
 import { userCollection } from '../config/Firebase'
 import { query, getDocs, limit } from 'firebase/firestore'
+import { themeContext } from '../Context/ThemeContext'
+import { Link } from 'react-router-dom'
 
 interface Result {
     id: string
@@ -11,11 +13,12 @@ interface Result {
     userNameLower: string
 
 }
-export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
+export const SearchSection = ({ windowWidth,searchBarRef }: { windowWidth: number,searchBarRef:any }) => {
     const [searchQuery, setSearchQuery] = useState('')
     const [results, setResults] = useState<Result[]>([]);
     const [loading, setLoading] = useState(false)
     const searchRef = useRef<HTMLDivElement | null>(null)
+    const {theme}=useContext(themeContext)
 
 
     const searchUsers = async (searchText: string) => {
@@ -41,7 +44,6 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
         }, 300)
         debouneSearch()
 
-        console.log(results, searchQuery)
         return () => debouneSearch.cancel()
     }, [searchQuery])
     useEffect(() => {
@@ -49,6 +51,7 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
             if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
                 setResults([])
             }
+        
         }
         document.addEventListener('click', handleClickOutside)
         return () => document.removeEventListener('click', handleClickOutside)
@@ -58,7 +61,7 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
 
 
     return (
-        <section className={` w-full flex relative  ${windowWidth>600 ? 'py-2' : 'top-2'}`}>
+        <div ref={el=> searchBarRef.current['second']=el} className={` w-full flex relative  ${windowWidth>600 ? 'py-2' : 'top-2'} ${theme=='dark'?'bg-[#121212]':'bg-[#fcfcfc]'} z-30  `}>
             <div className={` w-full  mx-auto min-w-[320px] max-w-[560px]  relative `}>
                 <div className={`items-center flex  gap-2 w-full pl-4  border border-gray-500  ${results.length > 0 || loading ? 'rounded-t-2xl' : 'rounded-2xl'} `}>
                     <span className=''><svg aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="M19.5 18.616 14.985 14.1a8.528 8.528 0 1 0-.884.884l4.515 4.515.884-.884ZM1.301 8.553a7.253 7.253 0 1 1 7.252 7.253 7.261 7.261 0 0 1-7.252-7.253Z"></path> </svg></span>
@@ -69,6 +72,7 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
                 {!loading &&results.map((obj, i) =>
 
                     <section ref={searchRef} key={i} className={`w-full  border ${i==results.length-1?'':'border-b-transparent'}  border-gray-500  border-t-transparent `}>
+                        <Link  to={`user-profile/${obj.userId}`}>
                         <div className='p-4 w-full h-full'>
                             <div className='flex  items-center gap-2 cursor-pointer'>
                                 <div className='w-8 h-8 '>
@@ -77,6 +81,7 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
                                 <div className='text-[14px] font-bold'>{obj.userName}</div>
                             </div>
                         </div>
+                        </Link>
                     </section>
                 )}
 
@@ -95,6 +100,6 @@ export const SearchSection = ({ windowWidth }: { windowWidth: number }) => {
                     }
                 </section>}
             </div>
-        </section>
+        </div>
     )
 }

@@ -44,14 +44,14 @@ const AutoPlayVideo = ({ src,className }: any) => {
             rect.right <= (window.innerWidth || document.documentElement.clientWidth);
 
           if (inView) {
-            video.play().catch((err) => console.log('Play failed:', err));
+            video.play();
           }
         }
       } else {
         //  If tab is hidden or minimized, pause and reset
         video?.pause();
         if (video) video.currentTime = 0;
-        console.log('Paused due to tab switch or minimize');
+    
       }
     };
 
@@ -59,7 +59,6 @@ const AutoPlayVideo = ({ src,className }: any) => {
     const handlePageHide = () => {
       video?.pause();
       if (video) video.currentTime = 0;
-      console.log('Paused due to page hide or unload');
     };
 
     // Add browser-level event listeners

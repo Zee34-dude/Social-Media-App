@@ -12,6 +12,7 @@ interface stateContextType {
   setPopupId: (popUpId: string | null) => void
   isdragged: boolean
   setIsdragged: (isdragged: boolean) => void
+  searchBarRef:React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>
 }
 export const stateContext = createContext<stateContextType>({
     postRef: { current: null },
@@ -26,18 +27,19 @@ export const stateContext = createContext<stateContextType>({
     setPopupId: () => { },
     isdragged: false,
     setIsdragged: () => { },
+    searchBarRef: { current: {} }
  
 })
 
 export const StateProvider = ({ children }: { children: React.ReactNode }) => {
     const postRef = useRef<HTMLFormElement>(null)
     const menuRef = useRef<HTMLDivElement>(null)
-
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [popUp, setPopup] = useState<string | null>(null)
     const [userPost, setUserPost] = useState(false)
     const [isdragged, setIsdragged] = useState<boolean>(false)
     const [popUpId, setPopupId] = useState<string | null>(null)
+    const searchBarRef = useRef<{ [key: string]: HTMLDivElement|null  }>({})
 
 
     const stateContextvalue:stateContextType = {
@@ -52,6 +54,7 @@ export const StateProvider = ({ children }: { children: React.ReactNode }) => {
         setPopupId,
         isdragged,
         setIsdragged,
+        searchBarRef
        
     }
     return (

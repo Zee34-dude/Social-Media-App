@@ -10,6 +10,7 @@ export interface User {
   userId: string,
   id: string,
   Bio:string
+  userName:string
 }
 export const Avatar = ({preview}:{preview:string|null}) => {
   const [avatar, SetAvatar] = useState<User[] | null>(null)

@@ -55,7 +55,7 @@ export const EditProfile = () => {
       const data = await response.json()
       const queryArray = await getDocs(q);
       const commentQueryDta = await getDocs(commentq)
-      console.log(queryArray, user?.uid)
+    
       const queryDataPromise = commentQueryDta.docs.map((dataObj) => {
         const userCommentRef = doc(db, 'comments', dataObj.id)
         if (user?.displayName !== undefined) {
@@ -160,7 +160,7 @@ export const EditProfile = () => {
     }
     finally {
       setIsTextLoading(false)
-      console.log('rrrr')
+     
     }
   }
   //Update the Username in the post and comment field
@@ -198,10 +198,10 @@ export const EditProfile = () => {
       await Promise.all(updatePromises);
     }
     catch (err) {
-      console.log(err)
+    
     }
     finally {
-      console.log('taavavca')
+  
     }
   }
 

@@ -10,7 +10,7 @@ const DatabaseLandingAnimation = () => {
         const canvas = canvasRef.current as HTMLCanvasElement | null;
         const ctx = canvas?.getContext("2d") as CanvasRenderingContext2D;
         let animationId: number;
-        console.log({ y: canvas }, ctx)
+        
 
 
         // Set canvas to full size of its parent 
@@ -38,7 +38,7 @@ const DatabaseLandingAnimation = () => {
                     dy: Math.random() * 4 - 1,
                 });
             }
-            console.log(points)
+          
             const draw = () => {
                 if (!ctx) return
                 ctx.clearRect(0, 0, canvas.width, canvas.height);

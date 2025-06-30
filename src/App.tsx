@@ -47,13 +47,7 @@ function App() {
 
 
   const [activeTab, setActiveTab] = useState<string>('LikedPost')
-  // useEffect(() => {
-  //   if (user) {
-  //     const savedTab = localStorage.getItem(`tabId${user.uid}`) || 'LikedPost';
-  //     setActiveTab(savedTab);
-  //   }
-  //   console.log(activeTab)
-  // }, [user]);
+ 
 
   const handleActiveTab = (tabId: string) => {
     setActiveTab(tabId)
@@ -130,7 +124,7 @@ function App() {
                     <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
                     <Route path="/login" element={<Login />} />
                     {<Route path='/register' element={<Register />} />}
-                    <Route path='/user-profile' element={<UserProfile />} />
+                    <Route path='/user-profile/:userId' element={<UserProfile />} />
                     <Route path='/edit-profile' element={<EditProfile />} />
                     <Route path='/p/:id' element={<ViewPostPage />} />
                     <Route path="/activity" element={<Activity
@@ -148,7 +142,7 @@ function App() {
                         activeTab={activeTab}
                         handleActiveTab={handleActiveTab}
                         setActiveTab={setActiveTab} />}>
-                        <Route path='UserPost' element={<UserPost
+                        <Route path='UserPost' element={<UserPost userId=''
 
                         />} />
                       </Route>
