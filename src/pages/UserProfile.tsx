@@ -23,7 +23,7 @@ export const UserProfile = () => {
   const { preview } = useContext(ImageContext)
   const { followingCount, followsCount } = useContext(FirebaseContext)
   const { userId } = useParams()
- 
+
 
 
   const queryData = query(userCollection, where('userId', '==', userId || user?.uid))
@@ -88,20 +88,25 @@ export const UserProfile = () => {
                 <BsPostcardHeart className='w-[1.2rem] h-[1.2rem]' />
                 POSTS
               </span>
-              <span onClick={() => setCurrentTab('comments')} className={`flex items-center gap-2 ${currentTab === 'comments' && 'border-b-2'} `}>
-                <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="16" icon-name="comment-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M10 19H1.871a.886.886 0 0 1-.798-.52.886.886 0 0 1 .158-.941L3.1 15.771A9 9 0 1 1 10 19Zm-6.549-1.5H10a7.5 7.5 0 1 0-5.323-2.219l.54.545L3.451 17.5Z"></path> </svg>
-                COMMENTS
+              { user?.uid==userId && <span className=' flex justify-center gap-10'>
+
+                <span onClick={() => setCurrentTab('comments')} className={`flex items-center gap-2 ${currentTab === 'comments' && 'border-b-2'} `}>
+                  <svg aria-hidden="true" className="icon-comment" fill="currentColor" height="16" icon-name="comment-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M10 19H1.871a.886.886 0 0 1-.798-.52.886.886 0 0 1 .158-.941L3.1 15.771A9 9 0 1 1 10 19Zm-6.549-1.5H10a7.5 7.5 0 1 0-5.323-2.219l.54.545L3.451 17.5Z"></path> </svg>
+                  COMMENTS
+                </span>
+                <span onClick={() => setCurrentTab('saved')} className="flex items-center gap-2">
+                  <CiShare1 className='w-[1.2rem] h-[1.2rem]' />
+                  SAVED
+                </span>
               </span>
-              <span onClick={() => setCurrentTab('saved')} className="flex items-center gap-2">
-                <CiShare1 className='w-[1.2rem] h-[1.2rem]' />
-                SAVED
-              </span>
+
+              }
             </div>
           </div>
           <div>
             <UserPosts
               currentTab={currentTab}
-              userId={userId||''}
+              userId={userId || ''}
             />
           </div>
         </div>

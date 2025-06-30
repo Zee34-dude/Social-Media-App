@@ -219,7 +219,7 @@ export const EditProfile = () => {
     <div className="md:ml-[25vw] max-[768px]:px-5 pt-20  pb-10">
       <div className="flex flex-col ">
         <div className="font-bold text-xl pb-5">Edit profile</div>
-        <div className="flex items-center">
+        <div className="flex items-center max-[400px]:flex-col max-[400px]:gap-6 ">
           <div className="flex items-center">
             <span className="w-22.5  h-22.5 relative ">
               {Avatar ? <Avatar preview={preview} /> : <Skeleton circle width={90} height={90} />}
@@ -236,7 +236,7 @@ export const EditProfile = () => {
             }
 
           </div>
-          <div className="absolute right-4  ">
+          <div className="min-[400px]:absolute min-[400px]:right-4  ">
             <form action="">
               <input
                 ref={inputRef}
